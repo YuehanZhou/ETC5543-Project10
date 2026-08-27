@@ -1,4 +1,6 @@
 library(tidyverse)
+library(sf)
+library(ggplot2)
 
 # data
 population <- read_csv("data/meeting1/abs_erp_population_2001_2025.csv")
@@ -8,6 +10,7 @@ kba <- read_csv("data/meeting1/key_biodiversity_area_attributes.csv")
 msa <- read_csv("data/meeting1/msa_precinct_attributes.csv")
 fauna <- read_csv("data/meeting1/vba_threatened_fauna_melbourne_fringe.csv")
 flora <- read_csv("data/meeting1/vba_threatened_flora_melbourne_fringe.csv")
+lga_boundary <- st_read("data//LGA_2025_AUST_GDA2020/LGA_2025_AUST_GDA2020.shp")
 
 # population
 glimpse(population)
@@ -135,3 +138,35 @@ flora |>
     comm_name, sci_name, start_year, longitude, latitude, totalcount, coverabund, ffg_desc, epbc_desc
   ) |>
   summarise(across(everything(), ~sum(is.na(.))))
+
+# lga_boundary
+glimpse(lga_boundary) 
+
+names(lga_boundary)
+
+study_lga <- lga_boundary |>
+  filter(LGA_NAME25 %in% c(
+    "Casey", "Hume", "Melton", "Whittlesea", "Wyndham"
+  ))
+
+study_lga |>
+  select(LGA_CODE25, LGA_NAME25, AREASQKM) 
+
+study_lga <- study_lga |>
+  mutate(
+    lga_code_2025 = as.numeric(LGA_CODE25)
+  )
+
+population_map <- study_lga |>
+  left_join(
+    population,
+    by = "lga_code_2025"
+  )
+
+glimpse(population_map)
+
+ggplot(study_lga) +
+  geom_sf() +
+  geom_sf_text(
+    aes(label = LGA_NAME25)) +
+  theme_minimal()
