@@ -55,3 +55,39 @@
   - Clyde South
   - Greenvale North (Part 2)
 - The spatial boundaries were successfully joined to the population data using the 2025 LGA code.
+
+## Victorian Land Cover Time Series
+- Victorian statewide raster land-cover dataset downloaded successfully.
+- Contains seven time periods:
+  - 1985–1990
+  - 1990–1995
+  - 1995–2000
+  - 2000–2005
+  - 2005–2010
+  - 2010–2015
+  - 2015–2019
+- The main data are stored as GeoTIFF raster files.
+- Can be used to examine how land cover has changed over time within the study LGAs.
+- Particularly useful for identifying areas where non-urban land may have changed to built-up/urban land.
+- Provides a more direct measure of physical land-cover change than population growth alone.
+- The latest available period ends in 2019, so it does not capture development between 2019 and 2026.
+- This dataset will need to be clipped to Casey, Hume, Melton, Whittlesea and Wyndham before analysis.
+
+## Habitat Value
+- Victorian Habitat Value spatial raster downloaded successfully.
+- The dataset is provided as a 75 m GeoTIFF raster.
+- It represents modelled relative biodiversity/habitat value across Victoria.
+- Can be used to identify areas of higher biodiversity importance within the study LGAs.
+- Potentially useful for overlaying with land-cover change and development-pressure layers to identify locations where urban expansion may affect higher-value habitat.
+- Habitat Value is not a direct measure of fauna movement or ecological connectivity.
+- A high Habitat Value does not by itself confirm that a particular threatened species is currently present at that location.
+- The raster will need to be clipped to the selected study LGAs before spatial analysis.
+
+## BCS Conservation Areas
+- Biodiversity Conservation Strategy (BCS) Conservation Areas spatial dataset downloaded successfully.
+- The dataset is provided as an ESRI Shapefile with polygon geometry.
+- It identifies designated conservation areas within Melbourne's growth corridors.
+- Can be used to compare existing conservation areas with urban-development pressure, land-cover change, Habitat Value and threatened-fauna records.
+- Useful for identifying whether areas of high biodiversity importance are already within recognised conservation areas or may fall outside them.
+- The BCS Conservation Areas layer represents existing conservation planning and is not itself a direct measure of habitat connectivity.
+- The dataset is already stored in the GitHub repository.
