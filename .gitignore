@@ -3,3 +3,7 @@
 .RData
 .Ruserdata
 .DS_Store
+
+data/VIC_LANDCOVER_TS/
+data/habitat_value/
+data/Planning_Overlay/

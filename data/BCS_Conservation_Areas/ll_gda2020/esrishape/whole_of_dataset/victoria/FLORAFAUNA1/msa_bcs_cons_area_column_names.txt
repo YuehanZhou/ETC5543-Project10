@@ -1,0 +1,13 @@
+﻿The column names in a Shape file are limited to 10 characters
+This lists the short column name and the original column name in the database table
+-----------------------------------------------------------------------------------------------------
+
+CA_LABEL = CA_LABEL
+VERS_DATE = VERS_DATE
+ID = ID
+TIME_REQ = TIME_REQ
+SPL_COND = SPL_COND
+HAB_PRTY = HAB_PRTY
+AREAHA = AREAHA
+CA_LABEL2 = CA_LABEL2
+CA_NAME = CA_NAME
