@@ -37,4 +37,21 @@
 - ABS 2025 LGA spatial boundaries were successfully loaded.
 - The national dataset contains 567 LGAs.
 - Five study LGAs were selected: Casey, Hume, Melton, Whittlesea and Wyndham.
+
+## PSP / MSA spatial matching
+- The downloaded PSP boundary layer contains 119 spatial features.
+- The MSA attribute table contains 122 records.
+- Two obvious naming differences were standardised:
+  - Quandong PSP (Council-led) → Quandong PSP
+  - Croskell → Croskell (Casey Central)
+- After matching by PSP name, 117 MSA records have spatial geometry.
+- Five MSA records remain without matched geometry:
+  - Officer Town Centre Review
+  - Merrifield North Masterplan
+  - Cardinia Road Corridor (Review)
+  - Pound Road
+  - Mernda Town Centre
+- Two PSP boundary features are not present in the MSA attribute table:
+  - Clyde South
+  - Greenvale North (Part 2)
 - The spatial boundaries were successfully joined to the population data using the 2025 LGA code.
