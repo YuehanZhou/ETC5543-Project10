@@ -1,11 +1,7 @@
 library(tidyverse)
 library(sf)
 
-list.files("data/golden_sun_moth_victoria_2026-09-01")
-list.files("data/southern_brown_bandicoot_victoria_2026-09-01")
-list.files("data/striped_legless_lizard_victoria_2026-09-01")
-list.files("data/growling_grass_frog_victoria_2026-09-01")
-
+# Read species data
 golden_moth <- read_csv(
   "data/golden_sun_moth_victoria_2026-09-01/golden_sun_moth_victoria_2026-09-01.csv"
 )
@@ -22,7 +18,22 @@ growling_frog <- read_csv(
   "data/growling_grass_frog_victoria_2026-09-01/growling_grass_frog_victoria_2026-09-01.csv"
 )
 
+# Read LGA boundary
+lga <- st_read("data/LGA_2025_AUST_GDA2020/LGA_2025_AUST_GDA2020.shp")
 
+# Create study LGAs
+study_lga <- lga |>
+  filter(
+    LGA_NAME25 %in% c(
+      "Casey",
+      "Hume",
+      "Melton",
+      "Whittlesea",
+      "Wyndham"
+    )
+  )
+
+# Check species data
 nrow(golden_moth)
 nrow(bandicoot)
 nrow(striped_lizard)
@@ -60,6 +71,7 @@ growling_frog |>
     missing_lat = sum(is.na(decimalLatitude))
   )
 
+# Spatial join
 join_to_lga <- function(data, species_name) {
   data |>
     filter(
