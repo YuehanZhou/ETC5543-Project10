@@ -2,7 +2,7 @@ library(tidyverse)
 library(sf)
 library(ggplot2)
 
-# data
+# Read data
 population <- read_csv("data/meeting1/abs_erp_population_2001_2025.csv")
 lga_reference <- read_csv("data/meeting1/abs_lga_2025_study_council_code_reference.csv")
 population_components <- read_csv("data/meeting1/abs_population_components_2022_2025.csv")
@@ -10,16 +10,15 @@ kba <- read_csv("data/meeting1/key_biodiversity_area_attributes.csv")
 msa <- read_csv("data/meeting1/msa_precinct_attributes.csv")
 fauna <- read_csv("data/meeting1/vba_threatened_fauna_melbourne_fringe.csv")
 flora <- read_csv("data/meeting1/vba_threatened_flora_melbourne_fringe.csv")
-lga_boundary <- st_read("data//LGA_2025_AUST_GDA2020/LGA_2025_AUST_GDA2020.shp")
+lga_boundary <- st_read("data/LGA_2025_AUST_GDA2020/LGA_2025_AUST_GDA2020.shp")
 
-# population
+# Population
 glimpse(population)
 
 population |>
   count(council)
 
 colSums(is.na(population))
-
 range(population$year)
 
 population |>
@@ -40,11 +39,11 @@ population_growth <- population |>
 
 population_growth
 
-# lga_reference
+# LGA reference
 glimpse(lga_reference)
 lga_reference
 
-# population_component
+# Population components
 glimpse(population_components)
 
 population_components |>
@@ -67,7 +66,7 @@ population_components |>
     values_from = OBS_VALUE
   )
 
-# kba
+# Key Biodiversity Areas
 glimpse(kba)
 head(kba)
 
@@ -78,7 +77,7 @@ kba |>
   select(name, locdescr) |>
   print(n = 42)
 
-# msa
+#  MSA precinct attributes
 glimpse(msa)
 
 msa |>
@@ -94,7 +93,7 @@ msa |>
   select(subregion, lga, psp_name, type) |>
   head(20)
 
-# fauna
+# VBA fauna
 glimpse(fauna)
 
 fauna |>
@@ -114,14 +113,10 @@ fauna |>
 
 fauna |>
   count(start_year) |>
-  arrange(start_year)
-
-fauna |>
-  count(start_year) |>
   arrange(start_year) |>
   print(n = Inf)
 
-# flora
+# VBA flora
 glimpse(flora)
 
 flora |>
@@ -139,9 +134,8 @@ flora |>
   ) |>
   summarise(across(everything(), ~sum(is.na(.))))
 
-# lga_boundary
+# LGA boundary
 glimpse(lga_boundary) 
-
 names(lga_boundary)
 
 study_lga <- lga_boundary |>
@@ -150,23 +144,14 @@ study_lga <- lga_boundary |>
   ))
 
 study_lga |>
-  select(LGA_CODE25, LGA_NAME25, AREASQKM) 
-
-study_lga <- study_lga |>
-  mutate(
-    lga_code_2025 = as.numeric(LGA_CODE25)
-  )
-
-population_map <- study_lga |>
-  left_join(
-    population,
-    by = "lga_code_2025"
-  )
-
-glimpse(population_map)
+  select(LGA_CODE25, LGA_NAME25, AREASQKM)
 
 ggplot(study_lga) +
   geom_sf() +
-  geom_sf_text(
-    aes(label = LGA_NAME25)) +
+  geom_sf_text(aes(label = LGA_NAME25)) +
+  labs(
+    title = "Study LGAs",
+    x = NULL,
+    y = NULL
+  ) +
   theme_minimal()
