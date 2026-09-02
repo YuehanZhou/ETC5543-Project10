@@ -136,3 +136,52 @@ Golden Sun Moth currently has the strongest spatial coverage, with 18 records ac
 
 Additional VBA and/or Atlas of Living Australia occurrence records should therefore be investigated before finalising the focal species for detailed analysis.
 
+
+## Candidate species screening using ALA data
+
+Because the supplied VBA fauna extract contained relatively few records within the study LGAs, four candidate threatened species were further examined using Atlas of Living Australia occurrence data. The ALA datasets were spatially filtered to Casey, Hume, Melton, Whittlesea and Wyndham in `R/02_species_data.R`.
+
+Recent records from 2015 onwards were then compared to assess whether each species had sufficient contemporary spatial coverage for further analysis.
+
+Based on the ALA candidate datasets, Golden Sun Moth and Growling Grass Frog currently provide the strongest basis for further spatial analysis. Since 2015, Golden Sun Moth has 4,550 records across four study LGAs, while Growling Grass Frog has 1,891 records across all five. Southern Brown Bandicoot is highly concentrated within Casey, while Striped Legless Lizard records are concentrated mainly within Melton and occur across only three study LGAs.
+
+Golden Sun Moth and Growling Grass Frog are therefore retained as the leading focal-species candidates, pending comparison with the broader high-accuracy VBA dataset.
+
+## Habitat Value analysis
+
+```{r}
+library(terra)
+
+habitat <- rast(
+  "../data/habitat_value/habitat_value_75m_20241024_vg2020.tif"
+)
+
+habitat
+```
+
+```{r}
+study_lga_vect <- vect(study_lga)
+
+study_lga_vect <- project(
+  study_lga_vect,
+  crs(habitat)
+)
+
+habitat_study <- crop(
+  habitat,
+  study_lga_vect
+)
+
+habitat_study <- mask(
+  habitat_study,
+  study_lga_vect
+)
+
+habitat_study
+```
+
+```{r}
+plot(habitat_study)
+plot(study_lga_vect, add = TRUE)
+```
+
