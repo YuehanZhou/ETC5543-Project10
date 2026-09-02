@@ -1,0 +1,138 @@
+---
+title: "Biodiversity Processing"
+format: html
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## Purpose
+
+This document explores the threatened fauna data and identifies which species have enough usable spatial records for further analysis.
+
+## Packages
+
+```{r}
+library(tidyverse)
+library(sf)
+
+fauna <- read_csv("../data/meeting1/vba_threatened_fauna_melbourne_fringe.csv")
+
+glimpse(fauna)
+```
+```{r}
+fauna_species_summary <- fauna |>
+  group_by(comm_name, sci_name) |>
+  summarise(
+    n_records = n(),
+    earliest_record = min(start_year, na.rm = TRUE),
+    latest_record = max(start_year, na.rm = TRUE),
+    ffg_status = paste(unique(na.omit(ffg_desc)), collapse = "; "),
+    epbc_status = paste(unique(na.omit(epbc_desc)), collapse = "; "),
+    .groups = "drop"
+  ) |>
+  arrange(desc(n_records))
+
+fauna_species_summary
+```
+
+
+```{r}
+fauna |>
+  summarise(
+    total_records = n(),
+    missing_longitude = sum(is.na(longitude)),
+    missing_latitude = sum(is.na(latitude)),
+    usable_coordinates = sum(!is.na(longitude) & !is.na(latitude))
+  )
+```
+
+## Spatial distribution across study LGAs
+
+```{r}
+# Load LGA boundaries
+lga_boundary <- st_read(
+  "../data/LGA_2025_AUST_GDA2020/LGA_2025_AUST_GDA2020.shp",
+  quiet = TRUE
+)
+
+# Keep only the five study LGAs
+study_lga <- lga_boundary |>
+  filter(LGA_NAME25 %in% c(
+    "Casey",
+    "Hume",
+    "Melton",
+    "Whittlesea",
+    "Wyndham"
+  ))
+
+# Convert fauna records to spatial points
+fauna_sf <- fauna |>
+  st_as_sf(
+    coords = c("longitude", "latitude"),
+    crs = 4326,
+    remove = FALSE
+  )
+
+# Match coordinate system with the LGA boundaries
+fauna_sf <- st_transform(fauna_sf, st_crs(study_lga))
+
+# Assign fauna records to LGAs
+fauna_lga <- st_join(
+  fauna_sf,
+  study_lga |> select(LGA_NAME25),
+  join = st_within
+)
+
+# Check how many records fall within each study LGA
+fauna_lga |>
+  count(LGA_NAME25, sort = TRUE)
+```
+
+
+
+```{r}
+fauna_lga |>
+  summarise(
+    total_records = n(),
+    inside_study_lgas = sum(!is.na(LGA_NAME25)),
+    outside_study_lgas = sum(is.na(LGA_NAME25))
+  )
+```
+
+```{r}
+species_by_lga <- fauna_lga |>
+  st_drop_geometry() |>
+  filter(!is.na(LGA_NAME25)) |>
+  count(comm_name, sci_name, LGA_NAME25, sort = TRUE)
+
+species_by_lga
+```
+
+```{r}
+species_lga_summary <- fauna_lga |>
+  st_drop_geometry() |>
+  filter(!is.na(LGA_NAME25)) |>
+  group_by(comm_name, sci_name) |>
+  summarise(
+    n_records = n(),
+    n_lgas = n_distinct(LGA_NAME25),
+    lgas = paste(sort(unique(LGA_NAME25)), collapse = ", "),
+    earliest_record = min(start_year, na.rm = TRUE),
+    latest_record = max(start_year, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  arrange(desc(n_records))
+
+species_lga_summary
+```
+
+### Initial finding
+
+The supplied threatened-fauna extract appears insufficient for detailed species-level spatial analysis. Most species are represented by relatively few records and are concentrated within a single study LGA.
+
+Golden Sun Moth currently has the strongest spatial coverage, with 18 records across Hume, Whittlesea and Wyndham. Southern Brown Bandicoot has only five records, all within Casey.
+
+Additional VBA and/or Atlas of Living Australia occurrence records should therefore be investigated before finalising the focal species for detailed analysis.
+
