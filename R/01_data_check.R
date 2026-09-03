@@ -25,20 +25,6 @@ population |>
   filter(year %in% c(2001, 2025)) |>
   arrange(council, year)
 
-population_growth <- population |>
-  filter(year %in% c(2001, 2025)) |>
-  select(council, year, population) |>
-  pivot_wider(
-    names_from = year,
-    values_from = population
-  ) |>
-  mutate(
-    growth = `2025` - `2001`,
-    growth_percent = (`2025` - `2001`) / `2001` * 100
-  )
-
-population_growth
-
 # LGA reference
 glimpse(lga_reference)
 lga_reference

@@ -1,9 +1,47 @@
+---
+title: "Development Processing"
+format: html
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+## Purpose
+This document examines population growth, PSP/MSA spatial boundaries and long-term urban expansion across Melbourne's fringe growth areas.
+
+## Packages
+```{r}
 library(tidyverse)
 library(sf)
 library(ggplot2)
 library(terra)
+```
 
-# Population growth
+## Data
+```{r}
+population <- read_csv(
+  "../data/meeting1/abs_erp_population_2001_2025.csv"
+)
+
+msa <- read_csv(
+  "../data/meeting1/msa_precinct_attributes.csv"
+)
+
+lga_boundary <- st_read(
+  "../data/LGA_2025_AUST_GDA2020/LGA_2025_AUST_GDA2020.shp",
+  quiet = TRUE
+)
+
+# Create study LGAs
+study_lga <- lga_boundary |>
+  filter(LGA_NAME25 %in% c(
+    "Casey", "Hume", "Melton", "Whittlesea", "Wyndham"
+  ))
+```
+
+
+## Population growth
+```{r}
 population_growth <- population |>
   filter(year %in% c(2001, 2025)) |>
   select(council, year, population) |>
@@ -17,28 +55,15 @@ population_growth <- population |>
   )
 
 population_growth
+```
+Population growth provides broader context for increasing development pressure across the five fringe LGAs.
 
-# Join population to LGA
-study_lga <- study_lga |>
-  mutate(lga_code_2025 = as.numeric(LGA_CODE25))
-
-population_map <- study_lga |>
-  left_join(population, by = "lga_code_2025")
-
-# Map study area
-ggplot(study_lga) +
-  geom_sf() +
-  geom_sf_text(aes(label = LGA_NAME25)) +
-  labs(
-    title = "Study LGAs",
-    x = NULL,
-    y = NULL
-  ) +
-  theme_minimal()
-
+## PSP/MSA spatial processing
+```{r}
 # PSP boundary
 psp_boundary <- st_read(
-  "data/PSP_Boundary/PSP_Boundary.geojson"
+  "../data/PSP_Boundary/PSP_Boundary.geojson",
+  quiet = TRUE
 )
 
 # Check unmatched PSP names
@@ -77,10 +102,14 @@ msa_spatial |>
   filter(st_is_empty(geometry)) |>
   st_drop_geometry() |>
   select(psp_name, lga, subregion, type)
+```
+Of the 122 MSA records, 117 were successfully matched to PSP polygons after standardising two inconsistent precinct names. Five precincts remain unmatched.
 
+## Urban expansion analysis
+```{r}
 # Land Cover Time Series
 landcover_files <- list.files(
-  "data/VIC_LANDCOVER_TS",
+  "../data/VIC_LANDCOVER_TS",
   pattern = "\\.tif$",
   full.names = TRUE
 )
@@ -91,27 +120,31 @@ periods <- c(
 )
 
 study_lga_vicgrid <- st_transform(study_lga, 3111)
+```
 
+```{r}
 # Calculate urban area by LGA
 get_urban_area <- function(file, period) {
-  
+
   landcover <- rast(file)
-  
+
   landcover_study <- crop(
     landcover,
     vect(study_lga_vicgrid)
   ) |>
     mask(vect(study_lga_vicgrid))
-  
+
+# Built environment and urban area
   urban <- landcover_study %in% c(1, 2)
-  
+
   urban_lga <- extract(
     urban,
     vect(study_lga_vicgrid),
     fun = sum,
     na.rm = TRUE
   )
-  
+
+# Each 25 m x 25 m cell equals 0.0625 hectares
   study_lga_vicgrid |>
     st_drop_geometry() |>
     select(LGA_NAME25) |>
@@ -131,7 +164,9 @@ urban_change <- map2_dfr(
 )
 
 urban_change
+```
 
+```{r}
 # Urban expansion
 urban_growth <- urban_change |>
   filter(period %in% c("1985-90", "2015-19")) |>
@@ -146,7 +181,10 @@ urban_growth <- urban_change |>
   )
 
 urban_growth
+```
+Urban land increased across all five study LGAs. Casey had the largest absolute increase, while Melton had the largest proportional increase.
 
+```{r}
 # Urban land trend
 ggplot(
   urban_change,
@@ -166,3 +204,4 @@ ggplot(
     colour = "LGA"
   ) +
   theme_minimal()
+```
