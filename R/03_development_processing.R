@@ -1,0 +1,168 @@
+library(tidyverse)
+library(sf)
+library(ggplot2)
+library(terra)
+
+# Population growth
+population_growth <- population |>
+  filter(year %in% c(2001, 2025)) |>
+  select(council, year, population) |>
+  pivot_wider(
+    names_from = year,
+    values_from = population
+  ) |>
+  mutate(
+    growth = `2025` - `2001`,
+    growth_percent = growth / `2001` * 100
+  )
+
+population_growth
+
+# Join population to LGA
+study_lga <- study_lga |>
+  mutate(lga_code_2025 = as.numeric(LGA_CODE25))
+
+population_map <- study_lga |>
+  left_join(population, by = "lga_code_2025")
+
+# Map study area
+ggplot(study_lga) +
+  geom_sf() +
+  geom_sf_text(aes(label = LGA_NAME25)) +
+  labs(
+    title = "Study LGAs",
+    x = NULL,
+    y = NULL
+  ) +
+  theme_minimal()
+
+# PSP boundary
+psp_boundary <- st_read(
+  "data/PSP_Boundary/PSP_Boundary.geojson"
+)
+
+# Check unmatched PSP names
+anti_join(
+  msa |> distinct(psp_name),
+  psp_boundary |> st_drop_geometry() |> distinct(PSP_NAME),
+  by = c("psp_name" = "PSP_NAME")
+)
+
+anti_join(
+  psp_boundary |> st_drop_geometry() |> distinct(PSP_NAME),
+  msa |> distinct(psp_name),
+  by = c("PSP_NAME" = "psp_name")
+)
+
+# Standardise PSP names
+psp_boundary <- psp_boundary |>
+  mutate(
+    PSP_NAME = case_when(
+      PSP_NAME == "Quandong PSP (Council-led)" ~ "Quandong PSP",
+      PSP_NAME == "Croskell" ~ "Croskell (Casey Central)",
+      TRUE ~ PSP_NAME
+    )
+  )
+
+# Join MSA attributes to PSP boundary
+msa_spatial <- msa |>
+  left_join(
+    psp_boundary,
+    by = c("psp_name" = "PSP_NAME")
+  ) |>
+  st_as_sf()
+
+# Check unmatched MSA precincts
+msa_spatial |>
+  filter(st_is_empty(geometry)) |>
+  st_drop_geometry() |>
+  select(psp_name, lga, subregion, type)
+
+# Land Cover Time Series
+landcover_files <- list.files(
+  "data/VIC_LANDCOVER_TS",
+  pattern = "\\.tif$",
+  full.names = TRUE
+)
+
+periods <- c(
+  "1985-90", "1990-95", "1995-00", "2000-05",
+  "2005-10", "2010-15", "2015-19"
+)
+
+study_lga_vicgrid <- st_transform(study_lga, 3111)
+
+# Calculate urban area by LGA
+get_urban_area <- function(file, period) {
+  
+  landcover <- rast(file)
+  
+  landcover_study <- crop(
+    landcover,
+    vect(study_lga_vicgrid)
+  ) |>
+    mask(vect(study_lga_vicgrid))
+  
+  urban <- landcover_study %in% c(1, 2)
+  
+  urban_lga <- extract(
+    urban,
+    vect(study_lga_vicgrid),
+    fun = sum,
+    na.rm = TRUE
+  )
+  
+  study_lga_vicgrid |>
+    st_drop_geometry() |>
+    select(LGA_NAME25) |>
+    bind_cols(urban_lga) |>
+    select(-ID) |>
+    rename(urban_cells = 2) |>
+    mutate(
+      period = period,
+      urban_area_ha = urban_cells * 0.0625
+    )
+}
+
+urban_change <- map2_dfr(
+  landcover_files,
+  periods,
+  get_urban_area
+)
+
+urban_change
+
+# Urban expansion
+urban_growth <- urban_change |>
+  filter(period %in% c("1985-90", "2015-19")) |>
+  select(LGA_NAME25, period, urban_area_ha) |>
+  pivot_wider(
+    names_from = period,
+    values_from = urban_area_ha
+  ) |>
+  mutate(
+    growth_ha = `2015-19` - `1985-90`,
+    growth_percent = growth_ha / `1985-90` * 100
+  )
+
+urban_growth
+
+# Urban land trend
+ggplot(
+  urban_change,
+  aes(
+    x = period,
+    y = urban_area_ha,
+    group = LGA_NAME25,
+    colour = LGA_NAME25
+  )
+) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "Urban land area over time",
+    x = "Period",
+    y = "Urban area (ha)",
+    colour = "LGA"
+  ) +
+  theme_minimal()
