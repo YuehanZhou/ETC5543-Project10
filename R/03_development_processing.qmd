@@ -6,10 +6,13 @@ execute:
   warning: false
   message: false
 ---
+
 ## Purpose
+
 This document examines population growth, PSP/MSA spatial boundaries and long-term urban expansion across Melbourne's fringe growth areas.
 
 ## Packages
+
 ```{r}
 library(tidyverse)
 library(sf)
@@ -18,17 +21,18 @@ library(terra)
 ```
 
 ## Data
+
 ```{r}
 population <- read_csv(
-  "../data/meeting1/abs_erp_population_2001_2025.csv"
+  "data/meeting1/abs_erp_population_2001_2025.csv"
 )
 
 msa <- read_csv(
-  "../data/meeting1/msa_precinct_attributes.csv"
+  "data/meeting1/msa_precinct_attributes.csv"
 )
 
 lga_boundary <- st_read(
-  "../data/LGA_2025_AUST_GDA2020/LGA_2025_AUST_GDA2020.shp",
+  "data/LGA_2025_AUST_GDA2020/LGA_2025_AUST_GDA2020.shp",
   quiet = TRUE
 )
 
@@ -39,8 +43,8 @@ study_lga <- lga_boundary |>
   ))
 ```
 
-
 ## Population growth
+
 ```{r}
 population_growth <- population |>
   filter(year %in% c(2001, 2025)) |>
@@ -56,13 +60,15 @@ population_growth <- population |>
 
 population_growth
 ```
+
 Population growth provides broader context for increasing development pressure across the five fringe LGAs.
 
 ## PSP/MSA spatial processing
+
 ```{r}
 # PSP boundary
 psp_boundary <- st_read(
-  "../data/PSP_Boundary/PSP_Boundary.geojson",
+  "data/PSP_Boundary/PSP_Boundary.geojson",
   quiet = TRUE
 )
 
@@ -103,13 +109,40 @@ msa_spatial |>
   st_drop_geometry() |>
   select(psp_name, lga, subregion, type)
 ```
+
 Of the 122 MSA records, 117 were successfully matched to PSP polygons after standardising two inconsistent precinct names. Five precincts remain unmatched.
 
+```{r}
+# Keep matched PSP/MSA precincts
+msa_matched <- msa_spatial |>
+  filter(!st_is_empty(geometry))
+
+# Transform to Victorian Land Cover CRS
+msa_vicgrid <- st_transform(msa_matched, 3111)
+
+# Create the five-LGA study area
+study_lga_vicgrid <- st_transform(study_lga, 3111)
+
+study_area <- study_lga_vicgrid |>
+  st_union()
+
+# Keep only the parts of PSP/MSA precincts within the study area
+msa_study <- msa_vicgrid |>
+  st_intersection(study_area)
+
+# Check number of precincts
+nrow(msa_study)
+n_distinct(msa_study$psp_name)
+```
+
+Of the 117 matched PSP/MSA precincts, 105 intersect the five study LGAs and are retained for the spatial analysis. These precincts are transformed to EPSG:3111 to match the Victorian Land Cover Time Series.
+
 ## Urban expansion analysis
+
 ```{r}
 # Land Cover Time Series
 landcover_files <- list.files(
-  "../data/VIC_LANDCOVER_TS",
+  "data/VIC_LANDCOVER_TS",
   pattern = "\\.tif$",
   full.names = TRUE
 )
@@ -118,9 +151,9 @@ periods <- c(
   "1985-90", "1990-95", "1995-00", "2000-05",
   "2005-10", "2010-15", "2015-19"
 )
-
-study_lga_vicgrid <- st_transform(study_lga, 3111)
 ```
+
+### LGA-level urban expansion
 
 ```{r}
 # Calculate urban area by LGA
@@ -177,11 +210,15 @@ urban_growth <- urban_change |>
   ) |>
   mutate(
     growth_ha = `2015-19` - `1985-90`,
-    growth_percent = growth_ha / `1985-90` * 100
+    growth_percent = if_else(
+      `1985-90` > 0,
+      growth_ha / `1985-90` * 100,
+      NA_real_
+    )
   )
-
 urban_growth
 ```
+
 Urban land increased across all five study LGAs. Casey had the largest absolute increase, while Melton had the largest proportional increase.
 
 ```{r}
@@ -205,3 +242,184 @@ ggplot(
   ) +
   theme_minimal()
 ```
+
+### PSP/MSA-level urban expansion
+
+```{r}
+# Calculate urban area by PSP/MSA precinct
+get_psp_urban_area <- function(file, period) {
+
+  landcover <- rast(file)
+
+  landcover_psp <- crop(
+    landcover,
+    vect(msa_study)
+  )
+
+# Built environment and urban area
+  urban <- landcover_psp %in% c(1, 2)
+
+  urban_psp <- extract(
+    urban,
+    vect(msa_study),
+    fun = sum,
+    na.rm = TRUE
+  )
+
+# Each 25 m x 25 m cell equals 0.0625 hectares
+  msa_study |>
+    st_drop_geometry() |>
+    select(psp_name, lga, subregion, type) |>
+    bind_cols(urban_psp) |>
+    select(-ID) |>
+    rename(urban_cells = 5) |>
+    mutate(
+      period = period,
+      urban_area_ha = urban_cells * 0.0625
+    )
+}
+
+psp_urban_change <- map2_dfr(
+  landcover_files,
+  periods,
+  get_psp_urban_area
+)
+
+nrow(psp_urban_change)
+```
+
+```{r}
+# PSP/MSA urban growth
+psp_urban_growth <- psp_urban_change |>
+  filter(period %in% c("1985-90", "2015-19")) |>
+  select(psp_name, lga, subregion, type, period, urban_area_ha) |>
+  pivot_wider(
+    names_from = period,
+    values_from = urban_area_ha
+  ) |>
+  mutate(
+    growth_ha = `2015-19` - `1985-90`,
+    growth_percent = if_else(
+      `1985-90` > 0,
+      growth_ha / `1985-90` * 100,
+      NA_real_
+    )
+  )
+
+head(psp_urban_growth, 10)
+```
+
+```{r}
+# Calculate precinct area
+psp_area <- msa_study |>
+  mutate(
+    psp_area_ha = as.numeric(st_area(geometry)) / 10000
+  ) |>
+  st_drop_geometry() |>
+  select(psp_name, psp_area_ha)
+
+# Add precinct area and urban land share
+psp_urban_growth <- psp_urban_growth |>
+  left_join(
+    psp_area,
+    by = "psp_name"
+  ) |>
+  mutate(
+    urban_share_1985 = `1985-90` / psp_area_ha * 100,
+    urban_share_2015 = `2015-19` / psp_area_ha * 100,
+    urban_share_change = urban_share_2015 - urban_share_1985
+  )
+
+psp_urban_growth
+```
+
+```{r}
+# Precincts with the largest absolute urban growth
+top_psp_growth <- psp_urban_growth |>
+  arrange(desc(growth_ha)) |>
+  select(
+    psp_name,
+    lga,
+    `1985-90`,
+    `2015-19`,
+    growth_ha,
+    growth_percent
+  ) |>
+  head(10)
+
+top_psp_growth
+```
+
+```{r}
+# Top 10 precincts by absolute urban growth
+ggplot(
+  top_psp_growth,
+  aes(
+    x = reorder(psp_name, growth_ha),
+    y = growth_ha
+  )
+) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Top 10 PSP/MSA precincts by urban land growth",
+    x = "PSP/MSA precinct",
+    y = "Urban land growth (ha)"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+# Top 10 precincts by change in urban land share
+top_psp_share <- psp_urban_growth |>
+  arrange(desc(urban_share_change)) |>
+  head(10)
+
+ggplot(
+  top_psp_share,
+  aes(
+    x = reorder(psp_name, urban_share_change),
+    y = urban_share_change
+  )
+) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Top 10 PSP/MSA precincts by change in urban land share",
+    x = "PSP/MSA precinct",
+    y = "Change in urban land share (percentage points)"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+# Compare top precincts across the two development indicators
+top_growth_names <- top_psp_growth |>
+  select(psp_name) |>
+  mutate(top_absolute_growth = TRUE)
+
+top_share_names <- top_psp_share |>
+  select(psp_name) |>
+  mutate(top_share_change = TRUE)
+
+top_indicator_comparison <- full_join(
+  top_growth_names,
+  top_share_names,
+  by = "psp_name"
+) |>
+  mutate(
+    top_absolute_growth = replace_na(top_absolute_growth, FALSE),
+    top_share_change = replace_na(top_share_change, FALSE)
+  )
+
+top_indicator_comparison
+
+# Precincts appearing in both top 10 lists
+top_indicator_overlap <- top_indicator_comparison |>
+  filter(top_absolute_growth, top_share_change)
+
+top_indicator_overlap
+```
+The PSP/MSA-level analysis shows that urban expansion is unevenly distributed across the study area. Precincts such as Clyde Creek, Ravenhall (Quarry Site), Cranbourne East and East Werribee Employment Precinct show relatively large absolute increases in urban land between 1985–90 and 2015–19. However, the ranking changes when urban growth is measured relative to precinct size. Granite Hills, Robinsons Road Employment Area North and Collison Estate show particularly large increases in the share of land classified as urban.
+
+Cranbourne North (Stage 1) and Greenvale Central are the only precincts that appear in the top 10 under both indicators. This suggests that absolute urban growth and change in urban land share capture different dimensions of development pressure. Both measures will therefore be retained for the next stage of the analysis, when development pressure is compared with threatened-species occurrence and biodiversity value.
