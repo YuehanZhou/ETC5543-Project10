@@ -185,3 +185,289 @@ plot(habitat_study)
 plot(study_lga_vect, add = TRUE)
 ```
 
+```{r}
+habitat_by_lga <- terra::extract(
+  habitat,
+  study_lga_vect,
+  fun = mean,
+  na.rm = TRUE
+)
+
+habitat_by_lga
+```
+
+```{r}
+habitat_by_lga$LGA_NAME25 <- study_lga_vect$LGA_NAME25
+
+habitat_by_lga <- habitat_by_lga |>
+  select(LGA_NAME25, everything())
+
+habitat_by_lga
+```
+
+```{r}
+high_habitat_study <- habitat_study >= 70
+
+high_habitat_by_lga <- terra::extract(
+  high_habitat,
+  study_lga_vect,
+  fun = mean,
+  na.rm = TRUE
+)
+
+high_habitat_by_lga$LGA_NAME25 <- study_lga_vect$LGA_NAME25
+
+high_habitat_by_lga <- high_habitat_by_lga |>
+  select(LGA_NAME25, everything()) |>
+  mutate(
+    high_habitat_percent = habitat_value_75m_20241024_vg2020 * 100
+  )
+
+high_habitat_by_lga
+```
+A provisional threshold of Habitat Value ≥ 70 was used to identify relatively high-value habitat for exploratory comparison. 
+Using a threshold of Habitat Value ≥ 70, Wyndham has the largest proportion of high-value habitat (43.55%), followed by Melton (41.79%), Whittlesea (33.62%), Hume (29.94%) and Casey (15.93%). This suggests that Wyndham and Melton may contain particularly important biodiversity areas within the study region and should be examined closely when compared with urban expansion pressure and threatened-fauna occurrence.
+
+
+## High-accuracy VBA fauna validation
+
+```{r}
+vba_full <- st_read(
+  "../data/FLORAFAUNA1/VBA_FAUNA25.shp",
+  quiet = TRUE
+)
+
+vba_full
+```
+```{r}
+vba_study <- st_join(
+  vba_full,
+  study_lga |> select(LGA_NAME25),
+  join = st_within,
+  left = FALSE
+)
+
+vba_study
+```
+
+```{r}
+vba_candidates <- vba_study |>
+  filter(
+    COMM_NAME %in% c(
+      "Golden Sun Moth",
+      "Growling Grass Frog",
+      "Southern Brown Bandicoot",
+      "Striped Legless Lizard"
+    )
+  )
+
+vba_candidates |>
+  st_drop_geometry() |>
+  count(COMM_NAME, sort = TRUE)
+```
+```{r}
+vba_candidate_summary <- vba_candidates |>
+  st_drop_geometry() |>
+  group_by(COMM_NAME) |>
+  summarise(
+    total_records = n(),
+    n_lgas = n_distinct(LGA_NAME25),
+    lgas = paste(sort(unique(LGA_NAME25)), collapse = ", "),
+    earliest_year = min(START_YEAR, na.rm = TRUE),
+    latest_year = max(START_YEAR, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  arrange(desc(total_records))
+
+vba_candidate_summary
+```
+
+```{r}
+vba_recent_summary <- vba_candidates |>
+  st_drop_geometry() |>
+  filter(START_YEAR >= 2015) |>
+  group_by(COMM_NAME) |>
+  summarise(
+    recent_records = n(),
+    recent_lgas = n_distinct(LGA_NAME25),
+    lgas = paste(sort(unique(LGA_NAME25)), collapse = ", "),
+    .groups = "drop"
+  ) |>
+  arrange(desc(recent_records))
+
+vba_recent_summary
+```
+The high-accuracy VBA dataset supports the selection of Golden Sun Moth and Growling Grass Frog as the two focal species. Golden Sun Moth has the strongest recent representation, with 2,899 records since 2015 across four study LGAs. Growling Grass Frog has fewer recent records but maintains broader spatial relevance across multiple growth corridors. In contrast, Southern Brown Bandicoot records are concentrated entirely within Casey, while Striped Legless Lizard has more limited spatial coverage. Golden Sun Moth and Growling Grass Frog were therefore selected for the subsequent biodiversity and habitat analyses.
+
+
+## BCS Conservation Areas analysis
+
+```{r}
+bcs <- st_read(
+  "../data/BCS_Conservation_Areas/ll_gda2020/esrishape/whole_of_dataset/victoria/FLORAFAUNA1/MSA_BCS_CONS_AREA.shp",
+  quiet = TRUE
+)
+
+bcs
+```
+```{r}
+bcs_study <- st_intersection(
+  bcs,
+  study_lga |> select(LGA_NAME25)
+)
+
+bcs_study
+```
+
+```{r}
+bcs_area_by_lga <- bcs_study |>
+  mutate(
+    area_km2 = as.numeric(st_area(geometry)) / 1e6
+  ) |>
+  st_drop_geometry() |>
+  group_by(LGA_NAME25) |>
+  summarise(
+    bcs_area_km2 = sum(area_km2, na.rm = TRUE),
+    n_bcs_features = n(),
+    .groups = "drop"
+  )
+
+bcs_area_by_lga
+```
+
+```{r}
+lga_area <- study_lga |>
+  mutate(
+    lga_area_km2 = as.numeric(st_area(geometry)) / 1e6
+  ) |>
+  st_drop_geometry() |>
+  select(LGA_NAME25, lga_area_km2)
+
+bcs_summary <- bcs_area_by_lga |>
+  left_join(lga_area, by = "LGA_NAME25") |>
+  mutate(
+    bcs_percent = (bcs_area_km2 / lga_area_km2) * 100
+  ) |>
+  arrange(desc(bcs_percent))
+
+bcs_summary
+```
+
+BCS Conservation Area coverage varies substantially across the five study LGAs. Whittlesea has the highest proportion of land within BCS Conservation Areas (3.52%), followed by Hume (2.99%) and Melton (2.08%). Wyndham has relatively limited BCS coverage (1.06%), while Casey has the lowest coverage (0.22%). When considered alongside the Habitat Value results, Wyndham may warrant closer examination because it contains a comparatively high proportion of high-value habitat but relatively low BCS conservation coverage.
+
+
+
+
+```{r}
+# Convert BCS to the same CRS as the Habitat Value raster
+bcs_vect <- vect(bcs_study)
+bcs_vect <- project(bcs_vect, crs(habitat))
+
+# Create a raster mask for BCS conservation areas
+bcs_mask <- rasterize(
+  bcs_vect,
+  habitat_study,
+  field = 1,
+  background = 0
+)
+
+# High-value habitat inside BCS
+high_inside_bcs <- high_habitat_study * bcs_mask
+
+# High-value habitat outside BCS
+high_outside_bcs <- high_habitat_study * (1 - bcs_mask)
+```
+
+```{r}
+inside_count <- global(high_inside_bcs, "sum", na.rm = TRUE)[1,1]
+outside_count <- global(high_outside_bcs, "sum", na.rm = TRUE)[1,1]
+
+total_high <- inside_count + outside_count
+
+protection_gap_summary <- tibble(
+  category = c("Inside BCS", "Outside BCS"),
+  cells = c(inside_count, outside_count),
+  percent = c(
+    inside_count / total_high * 100,
+    outside_count / total_high * 100
+  )
+)
+
+protection_gap_summary
+```
+Only 3.81% of high-value habitat cells within the study area fall inside BCS Conservation Areas, while 96.19% lie outside them. This suggests a substantial potential protection gap, with most relatively high-value habitat not currently overlapping the existing BCS conservation network. These areas should be examined further alongside threatened-fauna occurrence and urban expansion pressure before identifying final priority areas for protection.
+
+```{r}
+focal_species <- vba_candidates |>
+  filter(
+    COMM_NAME %in% c(
+      "Golden Sun Moth",
+      "Growling Grass Frog"
+    ),
+    START_YEAR >= 2015
+  )
+
+species_bcs_overlap <- st_join(
+  focal_species,
+  bcs_study |> select(CA_NAME),
+  join = st_within,
+  left = TRUE
+) |>
+  mutate(
+    bcs_status = if_else(
+      is.na(CA_NAME),
+      "Outside BCS",
+      "Inside BCS"
+    )
+  )
+
+species_bcs_summary <- species_bcs_overlap |>
+  st_drop_geometry() |>
+  count(COMM_NAME, bcs_status) |>
+  group_by(COMM_NAME) |>
+  mutate(
+    percent = n / sum(n) * 100
+  ) |>
+  ungroup()
+
+species_bcs_summary
+```
+Recent VBA records indicate that 39.43% of Golden Sun Moth observations occur within BCS Conservation Areas, while 60.57% occur outside them. In contrast, only 1.74% of recent Growling Grass Frog records fall within BCS areas, with 98.26% occurring outside. This suggests that Growling Grass Frog occurrences are particularly concentrated beyond the existing BCS conservation network, while Golden Sun Moth has greater but still incomplete overlap with designated conservation areas.
+
+
+```{r}
+# Transform focal species points to the Habitat Value raster CRS
+focal_species_habitat <- st_transform(
+  focal_species,
+  crs(habitat)
+)
+
+# Extract Habitat Value at each species occurrence point
+habitat_at_species <- terra::extract(
+  habitat,
+  vect(focal_species_habitat)
+)
+
+# Add extracted Habitat Value back to the species records
+focal_species_habitat$habitat_value <- habitat_at_species[[2]]
+```
+
+```{r}
+species_habitat_summary <- focal_species_habitat |>
+  st_drop_geometry() |>
+  group_by(COMM_NAME) |>
+  summarise(
+    n_records = n(),
+    mean_habitat_value = mean(habitat_value, na.rm = TRUE),
+    median_habitat_value = median(habitat_value, na.rm = TRUE),
+    high_value_records = sum(habitat_value >= 70, na.rm = TRUE),
+    high_value_percent = mean(habitat_value >= 70, na.rm = TRUE) * 100,
+    .groups = "drop"
+  )
+
+species_habitat_summary
+```
+
+Recent focal-species records are strongly associated with higher Habitat Value, particularly for Growling Grass Frog. The mean Habitat Value at Growling Grass Frog occurrence locations is 87.34, with 86.34% of recent records occurring in areas with Habitat Value ≥70. Golden Sun Moth records also show substantial overlap with higher-value habitat, with a mean Habitat Value of 70.74 and 59.61% of recent records occurring in areas above the same threshold. These results suggest that both focal species are concentrated in ecologically valuable areas, with the pattern especially pronounced for Growling Grass Frog.
+
+
