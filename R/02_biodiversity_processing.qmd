@@ -470,4 +470,39 @@ species_habitat_summary
 
 Recent focal-species records are strongly associated with higher Habitat Value, particularly for Growling Grass Frog. The mean Habitat Value at Growling Grass Frog occurrence locations is 87.34, with 86.34% of recent records occurring in areas with Habitat Value ≥70. Golden Sun Moth records also show substantial overlap with higher-value habitat, with a mean Habitat Value of 70.74 and 59.61% of recent records occurring in areas above the same threshold. These results suggest that both focal species are concentrated in ecologically valuable areas, with the pattern especially pronounced for Growling Grass Frog.
 
+```{r}
+# Transform species + BCS overlap points to Habitat Value CRS
+species_gap_habitat <- st_transform(
+  species_bcs_overlap,
+  crs(habitat)
+)
+
+# Extract Habitat Value at each point
+gap_habitat_values <- terra::extract(
+  habitat,
+  vect(species_gap_habitat)
+)
+
+species_gap_habitat$habitat_value <- gap_habitat_values[[2]]
+
+# Flag records that are both high-value habitat and outside BCS
+species_gap_habitat <- species_gap_habitat |>
+  mutate(
+    priority_gap = habitat_value >= 70 & bcs_status == "Outside BCS"
+  )
+```
+
+```{r}
+priority_gap_summary <- species_gap_habitat |>
+  st_drop_geometry() |>
+  group_by(COMM_NAME) |>
+  summarise(
+    total_recent_records = n(),
+    high_value_outside_bcs = sum(priority_gap, na.rm = TRUE),
+    priority_gap_percent = mean(priority_gap, na.rm = TRUE) * 100,
+    .groups = "drop"
+  )
+
+priority_gap_summary
+```
 
