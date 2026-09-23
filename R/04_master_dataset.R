@@ -188,42 +188,10 @@ bcs_psp_summary
 
 
 
-# Keep recent focal species records only
-focal_species_recent <- vba_candidates |>
-  filter(
-    COMM_NAME %in% c(
-      "Golden Sun Moth",
-      "Growling Grass Frog"
-    ),
-    START_YEAR >= 2015
-  )
-
-# Transform species points to the same CRS as the PSP/MSA precincts
-focal_species_psp <- st_transform(
-  focal_species_recent,
-  st_crs(msa_study)
+# Read processed focal-species counts by PSP/MSA precinct
+species_psp_counts <- read_csv(
+  "data/processed/species_psp_counts.csv"
 )
-
-# Assign each species record to a PSP/MSA precinct
-species_psp_join <- st_join(
-  focal_species_psp,
-  msa_study |> select(psp_name),
-  join = st_within,
-  left = FALSE
-)
-
-# Count records by species and precinct
-species_psp_counts <- species_psp_join |>
-  st_drop_geometry() |>
-  count(psp_name, COMM_NAME) |>
-  pivot_wider(
-    names_from = COMM_NAME,
-    values_from = n,
-    values_fill = 0
-  ) |>
-  rename(
-    golden_sun_moth_records = `Golden Sun Moth`,
-    growling_grass_frog_records = `Growling Grass Frog`
-  )
 
 species_psp_counts
+
