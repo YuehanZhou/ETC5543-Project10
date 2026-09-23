@@ -423,3 +423,17 @@ top_indicator_overlap
 The PSP/MSA-level analysis shows that urban expansion is unevenly distributed across the study area. Precincts such as Clyde Creek, Ravenhall (Quarry Site), Cranbourne East and East Werribee Employment Precinct show relatively large absolute increases in urban land between 1985–90 and 2015–19. However, the ranking changes when urban growth is measured relative to precinct size. Granite Hills, Robinsons Road Employment Area North and Collison Estate show particularly large increases in the share of land classified as urban.
 
 Cranbourne North (Stage 1) and Greenvale Central are the only precincts that appear in the top 10 under both indicators. This suggests that absolute urban growth and change in urban land share capture different dimensions of development pressure. Both measures will therefore be retained for the next stage of the analysis, when development pressure is compared with threatened-species occurrence and biodiversity value.
+
+```{r}
+# Save processed development indicators
+dir.create(
+  "data/processed",
+  showWarnings = FALSE
+)
+
+write_csv(
+  psp_urban_growth,
+  "data/processed/psp_urban_growth.csv"
+)
+```
+
