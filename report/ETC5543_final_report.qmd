@@ -1,0 +1,31 @@
+---
+title: "Urban Sprawl and Biodiversity"
+format: html
+---
+
+
+# 1. Introduction
+
+Melbourne’s outer growth corridors have experienced substantial urban expansion as new residential and employment areas are developed to accommodate population growth. While this development supports housing and infrastructure needs, it can also place pressure on native habitat through land conversion, fragmentation and increasing separation between ecologically important areas.
+This project examines the relationship between urban expansion and biodiversity across five rapidly developing Local Government Areas in Melbourne’s fringe: Casey, Hume, Melton, Whittlesea and Wyndham. The analysis combines long-term land-cover change with threatened-fauna occurrence records, Habitat Value and Biodiversity Conservation Strategy (BCS) Conservation Areas to identify locations where development pressure and biodiversity importance may overlap.
+Rather than considering urban expansion and biodiversity separately, the project aims to integrate both perspectives at the PSP/MSA precinct level. This allows development pressure to be compared with habitat quality, focal-species occurrence and existing conservation coverage, providing a spatial basis for identifying areas that may warrant closer consideration for ecological protection.
+
+# 2. Research Question and Objectives
+
+## Research Question
+
+**Where is urban expansion creating the greatest pressure on threatened fauna across Melbourne’s fringe growth corridors, and which ecological areas should be prioritised for protection?**
+
+### Objectives
+The project aims to:
+- Measure long-term urban expansion across the five study LGAs and PSP/MSA precincts;
+- Identify focal threatened-fauna species with sufficient spatial data for analysis;
+- Assess biodiversity importance using Habitat Value, focal-species occurrence and BCS Conservation Areas;
+- Identify potential protection gaps where ecologically important areas occur outside existing BCS conservation coverage; and
+- Integrate development-pressure and biodiversity indicators to identify precincts requiring closer consideration for protection.
+
+# 3. Study Area
+
+The study focuses on five LGAs located within Melbourne’s major fringe growth corridors: Casey, Hume, Melton, Whittlesea and Wyndham. These areas have experienced substantial population and urban growth and contain a mixture of established urban areas, developing precincts, agricultural land and ecologically significant habitat.
+For the detailed spatial analysis, PSP/MSA precincts are used as the primary unit of analysis because they provide a planning-relevant scale for comparing development and biodiversity conditions. Of the available MSA precinct records, 117 were successfully matched to spatial PSP boundaries, and 105 precincts intersect the five study LGAs and were retained for analysis.
+
