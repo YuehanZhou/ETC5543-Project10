@@ -6,19 +6,19 @@ library(DT)
 
 # Read combined development and biodiversity data
 explorer_data <- read_csv(
-  "data/processed/priority_explorer_data.csv",
+  "../data/processed/priority_explorer_data.csv",
   show_col_types = FALSE
 )
 
 # Read PSP boundaries
 psp_boundary <- st_read(
-  "data/PSP_Boundary/PSP_Boundary.geojson",
+  "../data/PSP_Boundary/PSP_Boundary.geojson",
   quiet = TRUE
 )
 
 # Read LGA boundaries
 lga_boundary <- st_read(
-  "data/LGA_2025_AUST_GDA2020/LGA_2025_AUST_GDA2020.shp",
+  "../data/LGA_2025_AUST_GDA2020/LGA_2025_AUST_GDA2020.shp",
   quiet = TRUE
 )
 
@@ -193,36 +193,31 @@ ui <- fluidPage(
         "Choose a scenario or adjust the sliders manually."
       ),
       
-      fluidRow(
-        
-        column(
-          width = 4,
-          actionButton(
-            "balanced",
-            "Balanced",
-            width = "100%"
-          )
-        ),
-        
-        column(
-          width = 4,
-          actionButton(
-            "development_focus",
-            "Development",
-            width = "100%"
-          )
-        ),
-        
-        column(
-          width = 4,
-          actionButton(
-            "conservation_focus",
-            "Conservation",
-            width = "100%"
-          )
-        )
+      actionButton(
+        "balanced",
+        "Balanced",
+        width = "100%"
       ),
       
+      br(),
+      br(),
+      
+      actionButton(
+        "development_focus",
+        "Development",
+        width = "100%"
+      ),
+      
+      br(),
+      br(),
+      
+      actionButton(
+        "conservation_focus",
+        "Conservation",
+        width = "100%"
+      ),
+      
+      br(),
       br(),
       
       sliderInput(
