@@ -1,0 +1,68 @@
+---
+title: "Urban Sprawl and Biodiversity in Melbourne's Growth Corridors"
+subtitle: "Identifying where urban expansion overlaps with ecological importance"
+author: "Siddhi Jadhav & Yuehan Zhou"
+institute: "ETC5543 Business Analytics Creative Activity"
+format: pptx
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+## The problem
+
+<!-- What is urban sprawl and why can it matter for biodiversity? -->
+
+## Research question and stakeholders
+
+<!-- Our research question + who could use these findings -->
+
+## Study area
+
+<!-- Five LGAs + 105 PSP/MSA precincts -->
+
+## Data and analysis framework
+
+<!-- Development, habitat, species and BCS data -->
+<!-- Show how the four datasets connect to the overall analysis -->
+
+## Urban expansion analysis
+
+<!-- How urban expansion was measured -->
+
+## Urban expansion findings
+
+<!-- Main development results -->
+
+## Biodiversity and conservation analysis
+
+<!-- High-value habitat, focal species and BCS -->
+
+## Biodiversity and conservation findings
+
+<!-- Main habitat, species and conservation-gap results -->
+
+## Integrated priority analysis
+
+<!-- Combine development + biodiversity + BCS -->
+<!-- Show the 15 rule-based priority precincts -->
+
+## How the priority score works
+
+<!-- Explain the three Shiny components and weighting -->
+
+## Interactive Priority Explorer
+
+<!-- Introduce the Shiny tool, then move into live demo -->
+
+## Key findings and implications
+
+<!-- Main takeaways + what they mean for planning -->
+
+## Limitations and future work
+
+<!-- Important caveats and possible extensions -->
+
+## Thank you
+
+<!-- Questions -->
