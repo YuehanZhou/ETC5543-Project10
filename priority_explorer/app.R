@@ -66,9 +66,11 @@ explorer_map <- psp_boundary |>
   filter(!is.na(growth_ha))
 
 # Clip precinct polygons to five-LGA study area
-explorer_map <- st_intersection(
-  explorer_map,
-  study_area
+explorer_map <- suppressWarnings(
+  st_intersection(
+    explorer_map,
+    study_area
+  )
 ) |>
   st_make_valid()
 
@@ -167,7 +169,7 @@ ui <- fluidPage(
       
       hr(),
       
-      h4("Focal species"),
+      h4("Filter by focal species records"),
       
       selectInput(
         "species_filter",
@@ -182,7 +184,13 @@ ui <- fluidPage(
       ),
       
       p(
-        "Filter precincts by recent focal-species records. 'Only' excludes precincts where both species were recorded."
+        "Species selections only filter the precincts displayed on the map and in the table. They do not change the priority score calculation."
+      ),
+      
+      p(
+        tags$small(
+          "'Only' excludes precincts where both focal species were recorded."
+        )
       ),
       
       hr(),
