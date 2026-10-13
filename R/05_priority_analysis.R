@@ -126,14 +126,10 @@ priority_scatter <- ggplot(
     linewidth = 0.6
   ) +
   geom_point(
-    aes(alpha = priority_area),
+    aes(colour = priority_area),
     size = 3
   ) +
-  scale_shape_discrete(
-    name = "Focal species present",
-    labels = c("No", "Yes")
-  ) +
-  scale_alpha_discrete(
+  scale_colour_discrete(
     name = "Priority precinct",
     labels = c("No", "Yes")
   ) +
@@ -208,8 +204,9 @@ study_area <- study_lga_vicgrid |>
   st_union()
 
 # Clip PSP/MSA precincts to the study area
-msa_study <- msa_vicgrid |>
-  st_intersection(study_area)
+msa_study <- suppressWarnings(
+  st_intersection(msa_vicgrid, study_area)
+)
 
 # Join final priority classification to spatial boundaries
 priority_map <- msa_study |>
@@ -217,11 +214,34 @@ priority_map <- msa_study |>
     priority_analysis |>
       select(
         psp_name,
-        priority_area,
-        growth_ha
+        priority_area
       ),
     by = "psp_name"
   )
+
+# Create map groups for the integrated priority result
+priority_map <- priority_map |>
+  mutate(
+    priority_group = case_when(
+      priority_area ~ "Integrated priority precinct",
+      TRUE ~ "Other study precinct"
+    )
+  )
+
+# Check mapped precincts
+n_distinct(priority_map$psp_name)
+
+# Check final priority classification on the map
+priority_map |>
+  st_drop_geometry() |>
+  count(priority_area)
+
+# Check thresholds used in the final classification
+tibble(
+  development_growth_median = development_growth_median,
+  development_share_median = development_share_median,
+  habitat_median = habitat_median
+)
 
 # Number priority precincts alphabetically
 priority_labels <- priority_map |>
@@ -232,8 +252,14 @@ priority_labels <- priority_map |>
   )
 
 # Create label positions while still using projected CRS
-priority_label_points <- st_point_on_surface(
-  priority_labels
+priority_label_points <- suppressWarnings(
+  st_point_on_surface(st_geometry(priority_labels))
+)
+
+priority_label_points_sf <- st_sf(
+  priority_labels |>
+    st_drop_geometry(),
+  geometry = priority_label_points
 )
 
 # Transform map and labels to longitude/latitude
@@ -248,9 +274,21 @@ study_lga_ll <- st_transform(
 )
 
 priority_label_points_ll <- st_transform(
-  priority_label_points,
+  priority_label_points_sf,
   4326
 )
+
+# Extract longitude and latitude for labels
+label_coordinates <- st_coordinates(
+  priority_label_points_ll
+)
+
+priority_label_xy <- priority_label_points_ll |>
+  st_drop_geometry() |>
+  mutate(
+    longitude = label_coordinates[, 1],
+    latitude = label_coordinates[, 2]
+  )
 
 # Numbered key
 priority_key_simple <- priority_labels |>
@@ -279,7 +317,7 @@ map_bbox <- st_bbox(priority_map_ll)
 priority_map_plot <- ggplot() +
   geom_sf(
     data = priority_map_ll,
-    aes(fill = priority_area),
+    aes(fill = priority_group),
     colour = "white",
     linewidth = 0.2
   ) +
@@ -289,11 +327,16 @@ priority_map_plot <- ggplot() +
     colour = "black",
     linewidth = 0.5
   ) +
-  geom_sf_text(
-    data = priority_label_points_ll,
-    aes(label = priority_id),
+  geom_text(
+    data = priority_label_xy,
+    aes(
+      x = longitude,
+      y = latitude,
+      label = priority_id
+    ),
     size = 3.5,
-    fontface = "bold"
+    fontface = "bold",
+    inherit.aes = FALSE
   ) +
   annotate(
     "text",
@@ -308,13 +351,16 @@ priority_map_plot <- ggplot() +
     size = 3.2,
     lineheight = 1.15
   ) +
-  scale_fill_discrete(
-    name = "Priority precinct",
-    labels = c("No", "Yes")
+  scale_fill_manual(
+    values = c(
+      "Integrated priority precinct" = "#C0392B",
+      "Other study precinct" = "#D9D9D9"
+    ),
+    name = NULL
   ) +
   labs(
-    title = "Priority PSP/MSA precincts across Melbourne's fringe growth areas",
-    subtitle = "Numbers identify priority precincts",
+    title = "Integrated priority precincts across Melbourne's fringe growth areas",
+    subtitle = "Priority precincts meet the development, biodiversity and BCS criteria",
     x = "Longitude",
     y = "Latitude",
     caption = "Numbers are identifiers only and do not indicate ranking."
@@ -338,7 +384,7 @@ priority_map_plot <- ggplot() +
       linewidth = 0.3
     ),
     panel.grid.minor = element_blank(),
-    legend.position = "right"
+    legend.position = "bottom"
   )
 
 print(priority_map_plot)
