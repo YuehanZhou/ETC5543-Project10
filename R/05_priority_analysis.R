@@ -251,7 +251,7 @@ priority_labels <- priority_map |>
     priority_id = row_number()
   )
 
-# Create label positions while still using projected CRS
+# Create label positions for priority precincts
 priority_label_points <- suppressWarnings(
   st_point_on_surface(st_geometry(priority_labels))
 )
@@ -278,7 +278,7 @@ priority_label_points_ll <- st_transform(
   4326
 )
 
-# Extract longitude and latitude for labels
+# Extract coordinates for priority labels
 label_coordinates <- st_coordinates(
   priority_label_points_ll
 )
@@ -288,6 +288,36 @@ priority_label_xy <- priority_label_points_ll |>
   mutate(
     longitude = label_coordinates[, 1],
     latitude = label_coordinates[, 2]
+  )
+
+priority_label_xy <- priority_label_xy |>
+  mutate(
+    longitude = case_when(
+      priority_id == 10 ~ longitude - 0.01,
+      priority_id == 15 ~ longitude + 0.01,
+      TRUE ~ longitude
+    ),
+    latitude = case_when(
+      priority_id == 10 ~ latitude + 0.006,
+      priority_id == 15 ~ latitude - 0.006,
+      TRUE ~ latitude
+    )
+  )
+
+# Create LGA label positions
+lga_label_points <- suppressWarnings(
+  st_point_on_surface(study_lga_ll)
+)
+
+lga_coordinates <- st_coordinates(
+  lga_label_points
+)
+
+lga_label_xy <- lga_label_points |>
+  st_drop_geometry() |>
+  mutate(
+    longitude = lga_coordinates[, 1],
+    latitude = lga_coordinates[, 2]
   )
 
 # Numbered key
@@ -302,18 +332,36 @@ priority_key_simple <- priority_labels |>
 priority_key_simple |>
   print(n = Inf, width = Inf)
 
-# Create text for the numbered precinct key
-priority_key_text <- priority_key_simple |>
+# Create two-column precinct key
+priority_key_left <- priority_key_simple |>
+  filter(priority_id <= 8) |>
   mutate(
-    key_label = paste0(priority_id, "  ", psp_name)
+    key_label = paste0(
+      priority_id,
+      "  ",
+      str_wrap(psp_name, width = 21)
+    )
   ) |>
   pull(key_label) |>
   paste(collapse = "\n")
 
-# Get map extent
-map_bbox <- st_bbox(priority_map_ll)
+priority_key_right <- priority_key_simple |>
+  filter(priority_id >= 9) |>
+  mutate(
+    key_label = paste0(
+      priority_id,
+      "  ",
+      str_wrap(psp_name, width = 21)
+    )
+  ) |>
+  pull(key_label) |>
+  paste(collapse = "\n")
 
-# Final numbered priority map with precinct key
+
+# Use full five-LGA extent
+map_bbox <- st_bbox(study_lga_ll)
+
+# Final presentation map
 priority_map_plot <- ggplot() +
   geom_sf(
     data = priority_map_ll,
@@ -325,7 +373,7 @@ priority_map_plot <- ggplot() +
     data = study_lga_ll,
     fill = NA,
     colour = "black",
-    linewidth = 0.5
+    linewidth = 0.6
   ) +
   geom_text(
     data = priority_label_xy,
@@ -338,23 +386,53 @@ priority_map_plot <- ggplot() +
     fontface = "bold",
     inherit.aes = FALSE
   ) +
+  geom_text(
+    data = lga_label_xy,
+    aes(
+      x = longitude,
+      y = latitude,
+      label = LGA_NAME25
+    ),
+    size = 4,
+    fontface = "bold",
+    colour = "grey25",
+    inherit.aes = FALSE
+  ) +
   annotate(
     "text",
-    x = as.numeric(map_bbox["xmax"]) + 0.06,
+    x = as.numeric(map_bbox["xmax"]) + 0.05,
     y = as.numeric(map_bbox["ymax"]) - 0.02,
-    label = paste0(
-      "Priority precinct key\n\n",
-      priority_key_text
-    ),
+    label = "Priority precinct key",
     hjust = 0,
     vjust = 1,
-    size = 3.2,
+    size = 3.5,
+    fontface = "bold"
+  ) +
+  
+  annotate(
+    "text",
+    x = as.numeric(map_bbox["xmax"]) + 0.05,
+    y = as.numeric(map_bbox["ymax"]) - 0.06,
+    label = priority_key_left,
+    hjust = 0,
+    vjust = 1,
+    size = 2.4,
     lineheight = 1.15
   ) +
+  annotate(
+    "text",
+    x = as.numeric(map_bbox["xmax"]) + 0.48,
+    y = as.numeric(map_bbox["ymax"]) - 0.06,
+    label = priority_key_right,
+    hjust = 0,
+    vjust = 1,
+    size = 2.4,
+    lineheight = 1.15
+  )+
   scale_fill_manual(
     values = c(
       "Integrated priority precinct" = "#C0392B",
-      "Other study precinct" = "#D9D9D9"
+      "Other study precinct" = "#ECECEC"
     ),
     name = NULL
   ) +
@@ -368,7 +446,7 @@ priority_map_plot <- ggplot() +
   coord_sf(
     xlim = c(
       as.numeric(map_bbox["xmin"]),
-      as.numeric(map_bbox["xmax"]) + 0.55
+      as.numeric(map_bbox["xmax"]) + 0.82
     ),
     ylim = c(
       as.numeric(map_bbox["ymin"]),
@@ -380,11 +458,29 @@ priority_map_plot <- ggplot() +
   theme_minimal() +
   theme(
     panel.grid.major = element_line(
-      colour = "grey85",
-      linewidth = 0.3
+      colour = "grey92",
+      linewidth = 0.25
     ),
     panel.grid.minor = element_blank(),
-    legend.position = "bottom"
+    axis.title = element_text(
+      size = 10
+    ),
+    axis.text = element_text(
+      size = 9,
+      colour = "grey40"
+    ),
+    legend.position = "bottom",
+    plot.title = element_text(
+      size = 16,
+      face = "bold"
+    ),
+    plot.subtitle = element_text(
+      size = 11
+    ),
+    plot.caption = element_text(
+      colour = "grey40",
+      margin = margin(t = 8)
+    )
   )
 
 print(priority_map_plot)
