@@ -76,7 +76,7 @@ priority_precincts <- priority_analysis |>
     golden_sun_moth_records,
     growling_grass_frog_records
   ) |>
-  arrange(desc(growth_ha))
+  arrange(psp_name)
 
 priority_precincts |>
   print(n = Inf, width = Inf)
@@ -95,7 +95,7 @@ priority_conditions <- priority_analysis |>
     high_biodiversity,
     no_bcs_protection
   ) |>
-  arrange(desc(growth_ha))
+  arrange(psp_name)
 
 priority_conditions |>
   print(n = Inf, width = Inf)
@@ -106,13 +106,8 @@ write_csv(
   "data/processed/priority_analysis.csv"
 )
 
-write_csv(
-  priority_precincts,
-  "data/processed/priority_precincts.csv"
-)
-
 # Development pressure and biodiversity importance
-ggplot(
+priority_scatter <- ggplot(
   priority_analysis,
   aes(
     x = urban_share_change,
@@ -148,6 +143,8 @@ ggplot(
     y = "High-value habitat (%)"
   ) +
   theme_minimal()
+
+print(priority_scatter)
 
 # Read MSA attributes
 msa <- read_csv(
@@ -220,32 +217,128 @@ priority_map <- msa_study |>
     priority_analysis |>
       select(
         psp_name,
-        priority_area
+        priority_area,
+        growth_ha
       ),
     by = "psp_name"
   )
 
-# Final priority map
-ggplot() +
+# Number priority precincts alphabetically
+priority_labels <- priority_map |>
+  filter(priority_area) |>
+  arrange(psp_name) |>
+  mutate(
+    priority_id = row_number()
+  )
+
+# Create label positions while still using projected CRS
+priority_label_points <- st_point_on_surface(
+  priority_labels
+)
+
+# Transform map and labels to longitude/latitude
+priority_map_ll <- st_transform(
+  priority_map,
+  4326
+)
+
+study_lga_ll <- st_transform(
+  study_lga_vicgrid,
+  4326
+)
+
+priority_label_points_ll <- st_transform(
+  priority_label_points,
+  4326
+)
+
+# Numbered key
+priority_key_simple <- priority_labels |>
+  st_drop_geometry() |>
+  select(
+    priority_id,
+    psp_name,
+    lga
+  )
+
+priority_key_simple |>
+  print(n = Inf, width = Inf)
+
+# Create text for the numbered precinct key
+priority_key_text <- priority_key_simple |>
+  mutate(
+    key_label = paste0(priority_id, "  ", psp_name)
+  ) |>
+  pull(key_label) |>
+  paste(collapse = "\n")
+
+# Get map extent
+map_bbox <- st_bbox(priority_map_ll)
+
+# Final numbered priority map with precinct key
+priority_map_plot <- ggplot() +
   geom_sf(
-    data = priority_map,
+    data = priority_map_ll,
     aes(fill = priority_area),
     colour = "white",
     linewidth = 0.2
   ) +
   geom_sf(
-    data = study_lga_vicgrid,
+    data = study_lga_ll,
     fill = NA,
+    colour = "black",
     linewidth = 0.5
+  ) +
+  geom_sf_text(
+    data = priority_label_points_ll,
+    aes(label = priority_id),
+    size = 3.5,
+    fontface = "bold"
+  ) +
+  annotate(
+    "text",
+    x = as.numeric(map_bbox["xmax"]) + 0.06,
+    y = as.numeric(map_bbox["ymax"]) - 0.02,
+    label = paste0(
+      "Priority precinct key\n\n",
+      priority_key_text
+    ),
+    hjust = 0,
+    vjust = 1,
+    size = 3.2,
+    lineheight = 1.15
   ) +
   scale_fill_discrete(
     name = "Priority precinct",
     labels = c("No", "Yes")
   ) +
   labs(
-    title = "Priority PSP/MSA precincts across Melbourne's fringe growth areas"
+    title = "Priority PSP/MSA precincts across Melbourne's fringe growth areas",
+    subtitle = "Numbers identify priority precincts",
+    x = "Longitude",
+    y = "Latitude",
+    caption = "Numbers are identifiers only and do not indicate ranking."
+  ) +
+  coord_sf(
+    xlim = c(
+      as.numeric(map_bbox["xmin"]),
+      as.numeric(map_bbox["xmax"]) + 0.55
+    ),
+    ylim = c(
+      as.numeric(map_bbox["ymin"]),
+      as.numeric(map_bbox["ymax"])
+    ),
+    datum = st_crs(4326),
+    expand = FALSE
   ) +
   theme_minimal() +
   theme(
-    axis.title = element_blank()
+    panel.grid.major = element_line(
+      colour = "grey85",
+      linewidth = 0.3
+    ),
+    panel.grid.minor = element_blank(),
+    legend.position = "right"
   )
+
+print(priority_map_plot)
