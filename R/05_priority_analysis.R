@@ -30,7 +30,7 @@ habitat_median <- median(
   na.rm = TRUE
 )
 
-# Create final priority classification
+# Create precinct-level ecological screening classification
 priority_analysis <- priority_analysis |>
   mutate(
     high_development =
@@ -50,7 +50,7 @@ priority_analysis <- priority_analysis |>
       no_bcs_protection
   )
 
-# Summarise priority classification
+# Summarise ecological screening results
 priority_summary <- priority_analysis |>
   summarise(
     total_precincts = n(),
@@ -62,7 +62,7 @@ priority_summary <- priority_analysis |>
 
 priority_summary
 
-# Create final priority precinct table
+# Create ecological priority precinct table
 priority_precincts <- priority_analysis |>
   filter(priority_area) |>
   select(
@@ -81,7 +81,7 @@ priority_precincts <- priority_analysis |>
 priority_precincts |>
   print(n = Inf, width = Inf)
 
-# Show why each priority precinct was selected
+# Show why each ecological priority precinct was identified
 priority_conditions <- priority_analysis |>
   filter(priority_area) |>
   select(
@@ -100,13 +100,13 @@ priority_conditions <- priority_analysis |>
 priority_conditions |>
   print(n = Inf, width = Inf)
 
-# Save final priority results
+# Save ecological screening results
 write_csv(
   priority_analysis,
   "data/processed/priority_analysis.csv"
 )
 
-# Development pressure and biodiversity importance
+# Development pressure and habitat value
 priority_scatter <- ggplot(
   priority_analysis,
   aes(
@@ -134,7 +134,7 @@ priority_scatter <- ggplot(
     labels = c("No", "Yes")
   ) +
   labs(
-    title = "Development pressure and biodiversity importance across PSP/MSA precincts",
+    title = "Development pressure and habitat value across PSP/MSA precincts",
     x = "Change in urban land share (percentage points)",
     y = "High-value habitat (%)"
   ) +
@@ -208,7 +208,7 @@ msa_study <- suppressWarnings(
   st_intersection(msa_vicgrid, study_area)
 )
 
-# Join final priority classification to spatial boundaries
+# Join ecological screening classification to spatial boundaries
 priority_map <- msa_study |>
   left_join(
     priority_analysis |>
@@ -219,11 +219,11 @@ priority_map <- msa_study |>
     by = "psp_name"
   )
 
-# Create map groups for the integrated priority result
+# Create map groups for the ecological screening result
 priority_map <- priority_map |>
   mutate(
     priority_group = case_when(
-      priority_area ~ "Integrated priority precinct",
+      priority_area ~ "Ecological priority precinct",
       TRUE ~ "Other study precinct"
     )
   )
@@ -231,7 +231,7 @@ priority_map <- priority_map |>
 # Check mapped precincts
 n_distinct(priority_map$psp_name)
 
-# Check final priority classification on the map
+# Check ecological screening classification on the map
 priority_map |>
   st_drop_geometry() |>
   count(priority_area)
@@ -339,7 +339,7 @@ priority_key_left <- priority_key_simple |>
     key_label = paste0(
       priority_id,
       "  ",
-      str_wrap(psp_name, width = 21)
+      str_wrap(psp_name, width = 23)
     )
   ) |>
   pull(key_label) |>
@@ -351,7 +351,7 @@ priority_key_right <- priority_key_simple |>
     key_label = paste0(
       priority_id,
       "  ",
-      str_wrap(psp_name, width = 21)
+      str_wrap(psp_name, width = 23)
     )
   ) |>
   pull(key_label) |>
@@ -431,17 +431,17 @@ priority_map_plot <- ggplot() +
   )+
   scale_fill_manual(
     values = c(
-      "Integrated priority precinct" = "#C0392B",
+      "Ecological priority precinct" = "#C0392B",
       "Other study precinct" = "#ECECEC"
     ),
     name = NULL
   ) +
   labs(
-    title = "Integrated priority precincts across Melbourne's fringe growth areas",
-    subtitle = "Priority precincts meet the development, biodiversity and BCS criteria",
+    title = "Ecological priority screening across Melbourne's fringe growth areas",
+    subtitle = "Precincts are screened using development pressure, habitat value, focal-species records and BCS coverage",
     x = "Longitude",
     y = "Latitude",
-    caption = "Numbers are identifiers only and do not indicate ranking."
+    caption = "Screening identifies precincts for further ecological and corridor assessment; it does not directly model fauna movement or connectivity."
   ) +
   coord_sf(
     xlim = c(
@@ -479,6 +479,7 @@ priority_map_plot <- ggplot() +
     ),
     plot.caption = element_text(
       colour = "grey40",
+      size = 8,
       margin = margin(t = 8)
     )
   )
