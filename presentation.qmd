@@ -1,6 +1,6 @@
 ---
 title: "Urban Sprawl and Biodiversity in Melbourne's Growth Corridors"
-subtitle: "Identifying where urban expansion overlaps with ecological importance"
+subtitle: "A precinct-level ecological screening of urban expansion, habitat value and conservation gaps"
 author: "Siddhi Jadhav & Yuehan Zhou"
 institute: "ETC5543 Business Analytics Creative Activity"
 format: pptx
@@ -9,59 +9,124 @@ execute:
   warning: false
   message: false
 ---
+
 ## The problem
 
-<!-- What is urban sprawl and why can it matter for biodiversity? -->
+<!-- Explain rapid urban expansion in Melbourne's fringe growth areas -->
+<!-- Why this matters for habitat, focal species and ecological connectivity -->
+<!-- Briefly introduce the original concern about fauna movement and ecological corridors -->
 
-## Research question and stakeholders
+## Research question and project scope
 
-<!-- Our research question + who could use these findings -->
+<!-- Original project question -->
+<!-- Explain how we operationalised the broad brief as a precinct-level ecological screening analysis -->
+<!-- Make clear that fauna movement/connectivity is not directly modelled -->
 
-## Study area
+## Stakeholders and planning relevance
 
-<!-- Five LGAs + 105 PSP/MSA precincts -->
+<!-- Who could use the findings: planners, councils, biodiversity/conservation teams -->
+<!-- Why identifying ecological pressure and conservation gaps is useful -->
 
-## Data and analysis framework
+## Study area and spatial unit
 
-<!-- Development, habitat, species and BCS data -->
-<!-- Show how the four datasets connect to the overall analysis -->
+<!-- Five LGAs: Casey, Hume, Melton, Whittlesea, Wyndham -->
+<!-- 105 PSP/MSA precincts -->
+<!-- Explain briefly why precincts are used as the analysis unit -->
+
+## Data sources
+
+<!-- Urban land-cover data -->
+<!-- Habitat Value raster -->
+<!-- Golden Sun Moth and Growling Grass Frog occurrence records -->
+<!-- BCS Conservation Areas -->
+<!-- PSP/MSA and LGA boundaries -->
+
+## Analysis framework
+
+<!-- Show the full workflow -->
+
+<!--
+Urban expansion pressure
+        +
+High-value habitat
+        +
+Focal-species evidence
+        +
+Conservation gap
+        ↓
+Precinct-level ecological priority screening
+        ↓
+Priority areas for further corridor/connectivity assessment
+-->
 
 ## Urban expansion analysis
 
-<!-- How urban expansion was measured -->
+<!-- Explain how development pressure is measured -->
+<!-- Urban growth in hectares -->
+<!-- Change in urban land share -->
+<!-- Historical vs recent land-cover periods -->
 
 ## Urban expansion findings
 
-<!-- Main development results -->
+<!-- Show the main spatial and numerical development results -->
+<!-- Highlight the precincts with strongest development pressure -->
 
-## Biodiversity and conservation analysis
+## Habitat, focal species and conservation analysis
 
-<!-- High-value habitat, focal species and BCS -->
+<!-- Explain high-value habitat -->
+<!-- Explain why Golden Sun Moth and Growling Grass Frog were selected -->
+<!-- Explain recent focal-species records -->
+<!-- Explain what BCS coverage represents -->
 
-## Biodiversity and conservation findings
+## Habitat and conservation-gap findings
 
-<!-- Main habitat, species and conservation-gap results -->
+<!-- Show high-value habitat distribution -->
+<!-- Show focal-species occurrence patterns -->
+<!-- Show high-value habitat outside BCS Conservation Areas -->
+<!-- Highlight important conservation gaps -->
 
-## Integrated priority analysis
+## Ecological priority screening
 
-<!-- Combine development + biodiversity + BCS -->
-<!-- Show the 15 rule-based priority precincts -->
+<!-- Explain the fixed rule-based screening -->
+<!-- High development pressure -->
+<!-- AND high ecological value -->
+<!-- AND no BCS protection -->
 
-## How the priority score works
+## Priority screening results
 
-<!-- Explain the three Shiny components and weighting -->
+<!-- Show the 15 ecological priority precincts -->
+<!-- Use final map from 05 -->
+<!-- Explain that these are priority precincts for further ecological/corridor assessment -->
+<!-- Do not describe them as confirmed ecological corridors -->
+
+## Scenario-based priority ranking
+
+<!-- Explain that the Shiny tool is complementary to the fixed screening -->
+<!-- Development pressure -->
+<!-- Habitat importance -->
+<!-- Conservation gap -->
+<!-- User-adjustable weights -->
 
 ## Interactive Priority Explorer
 
-<!-- Introduce the Shiny tool, then move into live demo -->
+<!-- Explain species filters -->
+<!-- Explain scenario buttons -->
+<!-- Live demo -->
+<!-- Clarify that the app supports decision exploration rather than corridor modelling -->
 
-## Key findings and implications
+## Key findings and planning implications
 
-<!-- Main takeaways + what they mean for planning -->
+<!-- Summarise the strongest development–ecology overlaps -->
+<!-- Identify where conservation gaps are most important -->
+<!-- Explain how the screening can support prioritisation and further ecological assessment -->
 
 ## Limitations and future work
 
-<!-- Important caveats and possible extensions -->
+<!-- Fauna movement is not directly modelled -->
+<!-- Habitat connectivity is not directly modelled -->
+<!-- Species records indicate occurrence, not movement or abundance -->
+<!-- BCS coverage is not the same as statutory planning overlay protection -->
+<!-- Future work: connectivity analysis, road barriers, planning overlays -->
 
 ## Thank you
 
