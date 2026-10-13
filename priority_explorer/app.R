@@ -136,6 +136,12 @@ ui <- fluidPage(
     "Melbourne Growth & Biodiversity Priority Explorer"
   ),
   
+  p(
+    tags$em(
+      "A precinct-level screening and decision-support tool. Priority scores combine development pressure, habitat importance and conservation gap. Species records provide contextual evidence only; the tool does not directly model fauna movement or ecological connectivity."
+    )
+  ),
+  
   sidebarLayout(
     
     sidebarPanel(
@@ -184,7 +190,7 @@ ui <- fluidPage(
       ),
       
       p(
-        "Species selections only filter the precincts displayed on the map and in the table. They do not change the priority score calculation."
+        "Species records provide contextual evidence and only filter the precincts displayed on the map and in the table. They do not change the priority score calculation."
       ),
       
       p(
@@ -238,7 +244,7 @@ ui <- fluidPage(
       
       sliderInput(
         "biodiversity_weight",
-        "Biodiversity importance",
+        "Habitat importance",
         min = 0,
         max = 100,
         value = 30
@@ -412,7 +418,7 @@ server <- function(input, output, session) {
       br(),
       
       paste0(
-        "Development: ",
+        "Habitat importance: ",
         round(development_pct),
         "%"
       ),
@@ -580,7 +586,7 @@ server <- function(input, output, session) {
           round(urban_share_change, 1),
           " percentage points<br><br>",
           
-          "<strong>Biodiversity</strong><br>",
+          "<strong>Habitat importance</strong><br>",
           
           "High-value habitat: ",
           round(high_habitat_percent, 1),
@@ -902,7 +908,7 @@ server <- function(input, output, session) {
           width = 3,
           
           h4(
-            "Biodiversity"
+            "Habitat importance"
           ),
           
           p(
