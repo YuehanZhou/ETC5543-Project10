@@ -37,7 +37,7 @@ Melbourne's fringe growth areas are experiencing rapid urban expansion, increasi
 
 ::: {.column width="55%"}
 
-<!-- Add study-area map here -->
+![](figures/study_lga_map.png){width=100%}
 
 :::
 
@@ -66,7 +66,6 @@ by highlighting precincts requiring closer ecological assessment.
 
 :::
 
-
 ## Data and analysis framework
 
 ::: {.columns}
@@ -94,28 +93,26 @@ by highlighting precincts requiring closer ecological assessment.
 
 ### Screening framework
 
-**Development pressure**
+**Development pressure**  
+Urban growth and urban-share change
 
-+
+**Ecological value**  
+High-value habitat and focal-species evidence
 
-**Ecological value**
+**Conservation gap**  
+BCS conservation coverage
 
-+
-
-**Conservation gap**
-
-↓
+### ↓
 
 ### **Ecological priority screening**
 
-↓
+### ↓
 
 **Priority precincts for further ecological and corridor assessment**
 
 :::
 
 :::
-
 
 ## Urban expansion: approach and findings
 
@@ -143,7 +140,7 @@ were classified as having **high development pressure**.
 
 ::: {.column width="60%"}
 
-<!-- Add development figure/map here -->
+![](figures/urban_share_change_top10.png){width=100%}
 
 :::
 
@@ -269,30 +266,75 @@ inside BCS areas
 
 The conservation gap is **not evenly distributed**. Precincts such as **Ravenhall (Quarry Site), Toolern and Mt Atkinson** contain some of the largest areas of high-value habitat outside BCS areas.
 
-*Outside BCS does not mean completely unprotected? It only means the habitat falls outside this specific conservation layer.*
-
-
+*Outside BCS does not mean completely unprotected. It only means the habitat falls outside this specific conservation layer.*
 
 ## Ecological priority screening
 
-We combine development and ecological evidence using a transparent rule-based screening approach.
+### A precinct is flagged only when all three conditions are met
 
-| | **Screening condition** |
-|---|---|
-| **High development pressure** | Urban growth above median **OR** urban-share change above median |
-| **High ecological value** | High-value habitat above median **OR** focal species present |
-| **Conservation gap** | No BCS conservation coverage |
+::: {.columns}
 
-### Final rule
+::: {.column width="30%"}
 
-**High development pressure**  
-**AND**  
-**High ecological value**  
-**AND**  
-**Conservation gap**
+### High development
 
-→ **Ecological priority precinct**
+Urban growth  
+**above median**
 
+**OR**
+
+Urban-share change  
+**above median**
+
+:::
+
+::: {.column width="5%"}
+
+<br><br><br>
+
+**AND**
+
+:::
+
+::: {.column width="30%"}
+
+### High ecological value
+
+High-value habitat  
+**above median**
+
+**OR**
+
+Focal species  
+**present**
+
+:::
+
+::: {.column width="5%"}
+
+<br><br><br>
+
+**AND**
+
+:::
+
+::: {.column width="30%"}
+
+### No BCS coverage
+
+**0%**
+
+of the precinct covered by BCS Conservation Areas
+
+:::
+
+:::
+
+<br>
+
+### ↓
+
+### **Ecological priority precinct**
 
 ## Priority screening results
 
@@ -316,12 +358,11 @@ They are **screening priorities**, not confirmed ecological corridors.
 
 ::: {.column width="72%"}
 
-<!-- Insert final map from 05 here -->
+![](figures/final_priority_map.png){width=100%}
 
 :::
 
 :::
-
 
 ## From priority screening to interactive exploration
 
@@ -417,15 +458,17 @@ Open Interactive Priority Explorer →
 **1. Urban expansion pressure is spatially uneven**  
 Some fringe precincts are experiencing substantially stronger development pressure than others.
 
-**2. Ecological value and conservation coverage do not always align**  
-Important habitat and focal-species evidence occur beyond existing BCS Conservation Areas.
+**2. Ecological value and conservation coverage do not always align**
 
-**3. Priority emerges from overlap**  
-The strongest planning concern is where:
+A large share of high-value habitat lies outside BCS Conservation Areas, while focal-species records are concentrated in a relatively small number of precincts.
 
-**development pressure + ecological value + conservation gap**
+**3. Priority emerges from overlap**
 
-occur in the same precinct.
+The strongest concern occurs where:
+
+**development pressure + ecological value + no BCS coverage**
+
+overlap in the same precinct.
 
 ### Planning implication
 
@@ -434,20 +477,31 @@ The 15 screened precincts provide a focused starting point for more detailed eco
 
 ## Limitations and future work
 
+::: {.columns}
+
+::: {.column width="48%"}
+
 ### Current limitations
 
 - Fauna movement is **not directly modelled**
 - Habitat connectivity is **not directly modelled**
 - Species records indicate **occurrence**, not movement pathways or abundance
-- BCS coverage represents conservation coverage and is **not equivalent to statutory planning-overlay protection**
+- BCS coverage is **not equivalent to statutory planning-overlay protection**
+
+:::
+
+::: {.column width="48%"}
 
 ### Next steps
 
-- incorporate habitat-connectivity analysis
-- assess road and infrastructure barriers
-- incorporate statutory planning overlays
-- refine the identification of potential ecological corridors
+- habitat-connectivity analysis
+- road and infrastructure barriers
+- statutory planning overlays
+- potential ecological corridor identification
 
+:::
+
+:::
 
 ## Thank you
 
