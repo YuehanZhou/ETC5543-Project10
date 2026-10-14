@@ -199,7 +199,7 @@ top_gap_precincts <- biodiversity_gap_results |>
   )
 
 # Create bar chart
-ggplot(
+gap_bar <- ggplot(
   top_gap_precincts,
   aes(
     x = reorder(
@@ -218,6 +218,16 @@ ggplot(
     y = "High-value habitat outside BCS (ha)"
   ) +
   theme_minimal()
+
+print(gap_bar)
+
+ggsave(
+  "figures/conservation_gap_bar.png",
+  plot = gap_bar,
+  width = 8,
+  height = 5,
+  dpi = 300
+)
 
 # Join Top 10 results to precinct boundaries
 biodiversity_gap_map <- msa_habitat_crs |>
@@ -290,6 +300,14 @@ ggplot() +
     axis.title = element_blank()
   )
 
+ggsave(
+  "figures/conservation_gap_map.png",
+  plot = gap_map,
+  width = 10,
+  height = 7,
+  dpi = 300
+)
+
 # Save analysis results
 write_csv(
   biodiversity_gap_results,
@@ -360,7 +378,13 @@ ggplot() +
   ) +
   theme_minimal()
 
-
+ggsave(
+  "figures/focal_species_map.png",
+  plot = species_plot,
+  width = 10,
+  height = 7,
+  dpi = 300
+)
 
 # Create combined dataset for final group analysis / interactive explorer
 explorer_data <- master_psp |>

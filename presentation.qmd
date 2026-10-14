@@ -73,17 +73,40 @@ Priority areas for further corridor/connectivity assessment
 
 ## Habitat, focal species and conservation analysis
 
-<!-- Explain high-value habitat -->
-<!-- Explain why Golden Sun Moth and Growling Grass Frog were selected -->
-<!-- Explain recent focal-species records -->
-<!-- Explain what BCS coverage represents -->
+| **Habitat coverage** | **Focal-species occurrence** | **Conservation gap** |
+|---|---|---|
+| % of each precinct with **high-value habitat** | Recent records of **Golden Sun Moth** and **Growling Grass Frog** | Hectares of high-value habitat **outside BCS Conservation Areas** |
+| **Habitat Value ≥ 70** | **Occurrence evidence only** | Larger value = larger potential conservation gap |
 
 ## Habitat and conservation-gap findings
+::: columns
 
-<!-- Show high-value habitat distribution -->
-<!-- Show focal-species occurrence patterns -->
-<!-- Show high-value habitat outside BCS Conservation Areas -->
-<!-- Highlight important conservation gaps -->
+::: {.column width="34%"}
+
+### **82.2%**
+
+of high-value habitat across the **105 precincts** lies outside BCS Conservation Areas.
+
+**17,172 ha**  
+total high-value habitat
+
+**14,113 ha**  
+outside BCS
+
+**3,059 ha**  
+inside BCS
+
+*Outside BCS does not necessarily mean completely unprotected.*
+
+:::
+
+::: {.column width="64%"}
+
+![](figures/conservation_gap_bar.png){width=100%}
+
+:::
+
+:::
 
 ## Ecological priority screening
 
@@ -101,11 +124,23 @@ Priority areas for further corridor/connectivity assessment
 
 ## Scenario-based priority ranking
 
-<!-- Explain that the Shiny tool is complementary to the fixed screening -->
-<!-- Development pressure -->
-<!-- Habitat importance -->
-<!-- Conservation gap -->
-<!-- User-adjustable weights -->
+**Step 1 — Standardise**
+
+Development pressure • Habitat importance • Conservation gap
+
+Each component is converted to a **relative percentile score**
+
+**Step 2 — Apply scenario weights**
+
+**Balanced:** 33% Development | 33% Habitat | 33% Gap  
+**Development-focused:** 50% | 25% | 25%  
+**Conservation-focused:** 20% | 40% | 40%
+
+**Step 3 — Combine**
+
+**Priority Score /100**
+
+*Relative priority across the 105 precincts — not a measure of ecological risk.*
 
 ## Interactive Priority Explorer
 
