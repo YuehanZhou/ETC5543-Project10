@@ -3,7 +3,13 @@ title: "Urban Sprawl and Biodiversity in Melbourne's Growth Corridors"
 subtitle: "A precinct-level ecological screening of urban expansion, habitat value and conservation gaps"
 author: "Siddhi Jadhav & Yuehan Zhou"
 institute: "ETC5543 Business Analytics Creative Activity"
-format: pptx
+
+format:
+  revealjs:
+    css: style.css
+    slide-number: true
+    transition: fade
+
 execute:
   echo: false
   warning: false
@@ -24,9 +30,10 @@ Melbourne's fringe growth areas are experiencing rapid urban expansion, increasi
 
 *Fauna movement and habitat connectivity are not directly modelled.*
 
+
 ## Study area and planning relevance
 
-::: columns
+::: {.columns}
 
 ::: {.column width="55%"}
 
@@ -59,9 +66,10 @@ by highlighting precincts requiring closer ecological assessment.
 
 :::
 
+
 ## Data and analysis framework
 
-::: columns
+::: {.columns}
 
 ::: {.column width="42%"}
 
@@ -108,9 +116,10 @@ by highlighting precincts requiring closer ecological assessment.
 
 :::
 
+
 ## Urban expansion: approach and findings
 
-::: columns
+::: {.columns}
 
 ::: {.column width="38%"}
 
@@ -144,40 +153,125 @@ were classified as having **high development pressure**.
 
 ## Habitat, focal species and conservation analysis
 
-| **Habitat coverage** | **Focal-species occurrence** | **Conservation gap** |
-|---|---|---|
-| % of each precinct with **high-value habitat** | Recent records of **Golden Sun Moth** and **Growling Grass Frog** | Hectares of high-value habitat **outside BCS Conservation Areas** |
-| **Habitat Value ≥ 70** | **Occurrence evidence only** | Larger value = larger potential conservation gap |
+### We examined three ecological indicators across the 105 precincts
 
-## Habitat and conservation-gap findings
-::: columns
+::: {.columns}
 
-::: {.column width="34%"}
+::: {.column width="32%"}
+
+### 1. Habitat
+
+We measured the **percentage of each precinct covered by high-value habitat**.
+
+**High-value habitat:**  
+Habitat Value ≥ 70
+
+:::
+
+::: {.column width="32%"}
+
+### 2. Focal species
+
+We checked recent records of:
+
+**Golden Sun Moth**
+
+**Growling Grass Frog**
+
+Species records show **where the species were observed**, not their abundance.
+
+:::
+
+::: {.column width="32%"}
+
+### 3. Conservation gap
+
+We calculated the amount of **high-value habitat outside BCS Conservation Areas**.
+
+A larger area indicates a larger **potential conservation gap**.
+
+:::
+
+:::
+
+**Together, these measures help identify where ecological value may require closer planning attention.**
+
+## Habitat and focal-species findings
+
+::: {.columns}
+
+::: {.column width="38%"}
+
+### High-value habitat
+
+Across the **105 precincts**, we identified:
+
+### **17,172 ha**
+
+of **high-value habitat**
+
+*Habitat Value ≥ 70*
+
+### Focal-species records
+
+**Golden Sun Moth**  
+2,899 recent records
+
+**Growling Grass Frog**  
+344 recent records
+
+At least one focal species was recorded in only:
+
+### **13 of 105 precincts**
+
+:::
+
+::: {.column width="60%"}
+
+![](figures/focal_species_map.png){width=100%}
+
+:::
+
+:::
+
+*Species records show observed occurrence — not abundance, and no record does not mean the species is absent.*
+
+## Most high-value habitat lies outside BCS Conservation Areas
+
+::: {.columns}
+
+::: {.column width="40%"}
 
 ### **82.2%**
 
-of high-value habitat across the **105 precincts** lies outside BCS Conservation Areas.
+of the **high-value habitat** identified across our 105 precincts lies **outside BCS Conservation Areas**.
 
 **17,172 ha**  
 total high-value habitat
 
 **14,113 ha**  
-outside BCS
+outside BCS areas
 
 **3,059 ha**  
-inside BCS
-
-*Outside BCS does not necessarily mean completely unprotected.*
+inside BCS areas
 
 :::
 
-::: {.column width="64%"}
+::: {.column width="58%"}
 
-![](figures/conservation_gap_bar.png){width=100%}
+![](figures/conservation_gap_bar.png){width=95%}
+
+:::
 
 :::
 
-:::
+### What does this tell us?
+
+The conservation gap is **not evenly distributed**. Precincts such as **Ravenhall (Quarry Site), Toolern and Mt Atkinson** contain some of the largest areas of high-value habitat outside BCS areas.
+
+*Outside BCS does not mean completely unprotected? It only means the habitat falls outside this specific conservation layer.*
+
+
 
 ## Ecological priority screening
 
@@ -199,9 +293,10 @@ We combine development and ecological evidence using a transparent rule-based sc
 
 → **Ecological priority precinct**
 
+
 ## Priority screening results
 
-::: columns
+::: {.columns}
 
 ::: {.column width="26%"}
 
@@ -227,32 +322,93 @@ They are **screening priorities**, not confirmed ecological corridors.
 
 :::
 
-## Scenario-based priority ranking
 
-**Step 1 — Standardise**
+## From priority screening to interactive exploration
 
-Development pressure • Habitat importance • Conservation gap
+::: {.columns}
 
-Each component is converted to a **relative percentile score**
+::: {.column width="47%"}
 
-**Step 2 — Apply scenario weights**
+### Fixed ecological screening
 
-**Balanced:** 33% Development | 33% Habitat | 33% Gap  
-**Development-focused:** 50% | 25% | 25%  
-**Conservation-focused:** 20% | 40% | 40%
+Used to identify the **15 priority precincts**.
 
-**Step 3 — Combine**
+A precinct is flagged when it has:
 
-**Priority Score /100**
+- high development pressure
+- high ecological value
+- no BCS conservation coverage
 
-*Relative priority across the 105 precincts — not a measure of ecological risk.*
+This gives a clear **YES / NO screening result**.
+
+:::
+
+::: {.column width="47%"}
+
+### Interactive Priority Explorer
+
+The Shiny tool goes one step further by **ranking all 105 precincts**.
+
+It combines:
+
+- **Development pressure**
+- **Habitat importance**
+- **Conservation gap**
+
+Users can change the weights to explore different planning scenarios.
+
+**Species records are used as a filter and contextual evidence, they do not change the score.**
+
+:::
+
+:::
+
+**Screening identifies where concern overlaps. The Explorer helps compare how strongly precincts should be prioritised under different planning objectives.**
 
 ## Interactive Priority Explorer
 
-<!-- Explain species filters -->
-<!-- Explain scenario buttons -->
-<!-- Live demo -->
-<!-- Clarify that the app supports decision exploration rather than corridor modelling -->
+::: {.columns}
+
+::: {.column width="68%"}
+
+![](figures/priority_explorer.png){width=100%}
+
+:::
+
+::: {.column width="30%"}
+
+### Explore priorities
+
+- Search individual precincts
+- Compare planning scenarios
+- Adjust component weights
+- View ranked precincts
+- Filter by focal-species records
+
+### Scenarios
+
+**Balanced**  
+Equal emphasis
+
+**Development-focused**  
+More weight on development pressure
+
+**Conservation-focused**  
+More weight on habitat and conservation gap
+
+:::
+
+:::
+
+<div class="tool-button">
+
+<a href="http://127.0.0.1:4593" target="_blank">
+Open Interactive Priority Explorer →
+</a>
+
+</div>
+
+*Priority scores are relative rankings among the 105 precincts, not ecological-risk probabilities.*
 
 ## Key findings and planning implications
 
@@ -275,6 +431,7 @@ occur in the same precinct.
 
 The 15 screened precincts provide a focused starting point for more detailed ecological and corridor assessment.
 
+
 ## Limitations and future work
 
 ### Current limitations
@@ -291,6 +448,7 @@ The 15 screened precincts provide a focused starting point for more detailed eco
 - incorporate statutory planning overlays
 - refine the identification of potential ecological corridors
 
+
 ## Thank you
 
-<!-- Questions -->
+### Questions?
