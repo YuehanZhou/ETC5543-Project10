@@ -10,66 +10,137 @@ execute:
   message: false
 ---
 
-## The problem
+## The problem and research question
 
-<!-- Explain rapid urban expansion in Melbourne's fringe growth areas -->
-<!-- Why this matters for habitat, focal species and ecological connectivity -->
-<!-- Briefly introduce the original concern about fauna movement and ecological corridors -->
+Melbourne's fringe growth areas are experiencing rapid urban expansion, increasing pressure on native habitat and ecological connectivity.
 
-## Research question and project scope
+### Original project question
 
-<!-- Original project question -->
-<!-- Explain how we operationalised the broad brief as a precinct-level ecological screening analysis -->
-<!-- Make clear that fauna movement/connectivity is not directly modelled -->
+**How is rapid housing expansion in fringe growth corridors encroaching on native fauna movement, and where are priority ecological corridors in need of planning overlay protection?**
 
-## Stakeholders and planning relevance
+### Our analytical scope
 
-<!-- Who could use the findings: planners, councils, biodiversity/conservation teams -->
-<!-- Why identifying ecological pressure and conservation gaps is useful -->
+**Precinct-level ecological screening of where development pressure, ecological value and conservation gaps overlap**
 
-## Study area and spatial unit
+*Fauna movement and habitat connectivity are not directly modelled.*
 
-<!-- Five LGAs: Casey, Hume, Melton, Whittlesea, Wyndham -->
-<!-- 105 PSP/MSA precincts -->
-<!-- Explain briefly why precincts are used as the analysis unit -->
+## Study area and planning relevance
 
-## Data sources
+::: columns
 
-<!-- Urban land-cover data -->
-<!-- Habitat Value raster -->
-<!-- Golden Sun Moth and Growling Grass Frog occurrence records -->
-<!-- BCS Conservation Areas -->
-<!-- PSP/MSA and LGA boundaries -->
+::: {.column width="55%"}
 
-## Analysis framework
+<!-- Add study-area map here -->
 
-<!-- Show the full workflow -->
+:::
 
-<!--
-Urban expansion pressure
-        +
-High-value habitat
-        +
-Focal-species evidence
-        +
-Conservation gap
-        ↓
-Precinct-level ecological priority screening
-        ↓
-Priority areas for further corridor/connectivity assessment
--->
+::: {.column width="43%"}
 
-## Urban expansion analysis
+### Study area
 
-<!-- Explain how development pressure is measured -->
-<!-- Urban growth in hectares -->
-<!-- Change in urban land share -->
-<!-- Historical vs recent land-cover periods -->
+**5 fringe-growth LGAs**
 
-## Urban expansion findings
+Casey · Hume · Melton · Whittlesea · Wyndham
 
-<!-- Show the main spatial and numerical development results -->
-<!-- Highlight the precincts with strongest development pressure -->
+**105 PSP/MSA precincts**
+
+### Why it matters
+
+The screening can support:
+
+- state and local planners
+- growth-area planners
+- councils
+- biodiversity teams
+
+by highlighting precincts requiring closer ecological assessment.
+
+:::
+
+:::
+
+## Data and analysis framework
+
+::: columns
+
+::: {.column width="42%"}
+
+### Data
+
+- **Land cover**  
+  Urban expansion
+
+- **Habitat Value raster**  
+  High-value habitat
+
+- **Species records**  
+  Golden Sun Moth  
+  Growling Grass Frog
+
+- **BCS Conservation Areas**  
+  Conservation coverage
+
+:::
+
+::: {.column width="56%"}
+
+### Screening framework
+
+**Development pressure**
+
++
+
+**Ecological value**
+
++
+
+**Conservation gap**
+
+↓
+
+### **Ecological priority screening**
+
+↓
+
+**Priority precincts for further ecological and corridor assessment**
+
+:::
+
+:::
+
+## Urban expansion: approach and findings
+
+::: columns
+
+::: {.column width="38%"}
+
+### Development pressure
+
+Measured using:
+
+**Urban growth (ha)**  
+Absolute increase in urban land
+
+**Urban-share change**  
+Change in the proportion of each precinct classified as urban
+
+### Result
+
+**63 / 105 precincts**
+
+were classified as having **high development pressure**.
+
+:::
+
+::: {.column width="60%"}
+
+<!-- Add development figure/map here -->
+
+:::
+
+:::
+
+**Median thresholds:** 6.12 ha growth · 1.58 percentage-point share change
 
 ## Habitat, focal species and conservation analysis
 
@@ -110,17 +181,51 @@ inside BCS
 
 ## Ecological priority screening
 
-<!-- Explain the fixed rule-based screening -->
-<!-- High development pressure -->
-<!-- AND high ecological value -->
-<!-- AND no BCS protection -->
+We combine development and ecological evidence using a transparent rule-based screening approach.
+
+| | **Screening condition** |
+|---|---|
+| **High development pressure** | Urban growth above median **OR** urban-share change above median |
+| **High ecological value** | High-value habitat above median **OR** focal species present |
+| **Conservation gap** | No BCS conservation coverage |
+
+### Final rule
+
+**High development pressure**  
+**AND**  
+**High ecological value**  
+**AND**  
+**Conservation gap**
+
+→ **Ecological priority precinct**
 
 ## Priority screening results
 
-<!-- Show the 15 ecological priority precincts -->
-<!-- Use final map from 05 -->
-<!-- Explain that these are priority precincts for further ecological/corridor assessment -->
-<!-- Do not describe them as confirmed ecological corridors -->
+::: columns
+
+::: {.column width="26%"}
+
+### **15**
+
+ecological priority precincts were identified across the five study LGAs.
+
+These precincts combine:
+
+- relatively high development pressure
+- ecological value
+- no BCS coverage
+
+They are **screening priorities**, not confirmed ecological corridors.
+
+:::
+
+::: {.column width="72%"}
+
+<!-- Insert final map from 05 here -->
+
+:::
+
+:::
 
 ## Scenario-based priority ranking
 
@@ -151,17 +256,40 @@ Each component is converted to a **relative percentile score**
 
 ## Key findings and planning implications
 
-<!-- Summarise the strongest development–ecology overlaps -->
-<!-- Identify where conservation gaps are most important -->
-<!-- Explain how the screening can support prioritisation and further ecological assessment -->
+### Three messages emerge from the analysis
+
+**1. Urban expansion pressure is spatially uneven**  
+Some fringe precincts are experiencing substantially stronger development pressure than others.
+
+**2. Ecological value and conservation coverage do not always align**  
+Important habitat and focal-species evidence occur beyond existing BCS Conservation Areas.
+
+**3. Priority emerges from overlap**  
+The strongest planning concern is where:
+
+**development pressure + ecological value + conservation gap**
+
+occur in the same precinct.
+
+### Planning implication
+
+The 15 screened precincts provide a focused starting point for more detailed ecological and corridor assessment.
 
 ## Limitations and future work
 
-<!-- Fauna movement is not directly modelled -->
-<!-- Habitat connectivity is not directly modelled -->
-<!-- Species records indicate occurrence, not movement or abundance -->
-<!-- BCS coverage is not the same as statutory planning overlay protection -->
-<!-- Future work: connectivity analysis, road barriers, planning overlays -->
+### Current limitations
+
+- Fauna movement is **not directly modelled**
+- Habitat connectivity is **not directly modelled**
+- Species records indicate **occurrence**, not movement pathways or abundance
+- BCS coverage represents conservation coverage and is **not equivalent to statutory planning-overlay protection**
+
+### Next steps
+
+- incorporate habitat-connectivity analysis
+- assess road and infrastructure barriers
+- incorporate statutory planning overlays
+- refine the identification of potential ecological corridors
 
 ## Thank you
 
