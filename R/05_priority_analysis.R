@@ -1,12 +1,12 @@
 library(tidyverse)
 library(sf)
 
-# Read master dataset
+# 1. Read master dataset
 master_psp <- read_csv(
   "data/processed/master_psp.csv"
 )
 
-# Create focal-species presence indicator
+# 2. Create focal-species presence indicator
 priority_analysis <- master_psp |>
   mutate(
     focal_species_present =
@@ -14,7 +14,7 @@ priority_analysis <- master_psp |>
       growling_grass_frog_records > 0
   )
 
-# Calculate thresholds
+# 3. Calculate screening thresholds
 development_growth_median <- median(
   priority_analysis$growth_ha,
   na.rm = TRUE
@@ -30,39 +30,47 @@ habitat_median <- median(
   na.rm = TRUE
 )
 
-# Create precinct-level ecological screening classification
+# 4. Create precinct-level ecological screening classification
 priority_analysis <- priority_analysis |>
+  # High development pressure:
+  # above-median absolute urban growth OR
+  # above-median change in urban land share
   mutate(
     high_development =
       growth_ha > development_growth_median |
       urban_share_change > development_share_median,
     
-    high_biodiversity =
+    # High ecological value:
+    # above-median high-value habitat OR
+    # at least one focal species recorded
+    high_ecological_value =
       high_habitat_percent > habitat_median |
       focal_species_present,
     
-    no_bcs_protection =
+    # No coverage by BCS Conservation Areas
+    no_bcs_coverage =
       bcs_percent == 0,
     
+    # Final baseline ecological screening
     priority_area =
       high_development &
-      high_biodiversity &
-      no_bcs_protection
+      high_ecological_value &
+      no_bcs_coverage
   )
 
-# Summarise ecological screening results
+# 5. Summarise ecological screening results
 priority_summary <- priority_analysis |>
   summarise(
     total_precincts = n(),
     high_development = sum(high_development),
-    high_biodiversity = sum(high_biodiversity),
-    no_bcs_protection = sum(no_bcs_protection),
+    high_ecological_value = sum(high_ecological_value),
+    no_bcs_coverage = sum(no_bcs_coverage),
     priority_precincts = sum(priority_area)
   )
 
 priority_summary
 
-# Create ecological priority precinct table
+# 6. Create ecological priority precinct table
 priority_precincts <- priority_analysis |>
   filter(priority_area) |>
   select(
@@ -81,7 +89,7 @@ priority_precincts <- priority_analysis |>
 priority_precincts |>
   print(n = Inf, width = Inf)
 
-# Show why each ecological priority precinct was identified
+# 7. Show why each ecological priority precinct was identified
 priority_conditions <- priority_analysis |>
   filter(priority_area) |>
   select(
@@ -92,21 +100,21 @@ priority_conditions <- priority_analysis |>
     focal_species_present,
     bcs_percent,
     high_development,
-    high_biodiversity,
-    no_bcs_protection
+    high_ecological_value,
+    no_bcs_coverage
   ) |>
   arrange(psp_name)
 
 priority_conditions |>
   print(n = Inf, width = Inf)
 
-# Save ecological screening results
+# 8. Save ecological screening results
 write_csv(
   priority_analysis,
   "data/processed/priority_analysis.csv"
 )
 
-# Development pressure and habitat value
+# 9. Development pressure and habitat value
 priority_scatter <- ggplot(
   priority_analysis,
   aes(
@@ -135,14 +143,16 @@ priority_scatter <- ggplot(
   ) +
   labs(
     title = "Development pressure and habitat value across PSP/MSA precincts",
+    subtitle = "Dashed lines show median thresholds used in the baseline ecological screening",
     x = "Change in urban land share (percentage points)",
-    y = "High-value habitat (%)"
+    y = "High-value habitat (%)",
+    shape = "Focal species present"
   ) +
   theme_minimal()
 
 print(priority_scatter)
 
-# Read MSA attributes
+# 10. Read spatial datasets
 msa <- read_csv(
   "data/meeting1/msa_precinct_attributes.csv"
 )
@@ -159,17 +169,19 @@ lga_boundary <- st_read(
   quiet = TRUE
 )
 
-# Keep only the five study LGAs
+# 11. Prepare five-LGA study area
 study_lga <- lga_boundary |>
-  filter(LGA_NAME25 %in% c(
-    "Casey",
-    "Hume",
-    "Melton",
-    "Whittlesea",
-    "Wyndham"
-  ))
+  filter(
+    LGA_NAME25 %in% c(
+      "Casey",
+      "Hume",
+      "Melton",
+      "Whittlesea",
+      "Wyndham"
+    )
+  )
 
-# Standardise PSP names
+# 12. Standardise PSP names
 psp_boundary <- psp_boundary |>
   mutate(
     PSP_NAME = case_when(
@@ -179,7 +191,7 @@ psp_boundary <- psp_boundary |>
     )
   )
 
-# Join MSA attributes to PSP polygons
+# 13. Join MSA attributes to PSP polygons
 msa_spatial <- msa |>
   left_join(
     psp_boundary,
@@ -188,7 +200,7 @@ msa_spatial <- msa |>
   st_as_sf() |>
   filter(!st_is_empty(geometry))
 
-# Transform to VicGrid
+# 14. Transform to VicGrid
 msa_vicgrid <- st_transform(
   msa_spatial,
   3111
@@ -199,16 +211,19 @@ study_lga_vicgrid <- st_transform(
   3111
 )
 
-# Create the five-LGA study area
+# 15. Create study area
 study_area <- study_lga_vicgrid |>
   st_union()
 
-# Clip PSP/MSA precincts to the study area
+# 16. Clip PSP/MSA precincts to study area
 msa_study <- suppressWarnings(
-  st_intersection(msa_vicgrid, study_area)
+  st_intersection(
+    msa_vicgrid,
+    study_area
+  )
 )
 
-# Join ecological screening classification to spatial boundaries
+# 17. Join ecological screening results to spatial boundaries
 priority_map <- msa_study |>
   left_join(
     priority_analysis |>
@@ -219,7 +234,7 @@ priority_map <- msa_study |>
     by = "psp_name"
   )
 
-# Create map groups for the ecological screening result
+# 18. Create map groups
 priority_map <- priority_map |>
   mutate(
     priority_group = case_when(
@@ -228,22 +243,23 @@ priority_map <- priority_map |>
     )
   )
 
-# Check mapped precincts
+# 19. Quality checks
+# Number of mapped precincts
 n_distinct(priority_map$psp_name)
 
-# Check ecological screening classification on the map
+# Check screening classification on map
 priority_map |>
   st_drop_geometry() |>
   count(priority_area)
 
-# Check thresholds used in the final classification
+# Check thresholds used in baseline screening
 tibble(
   development_growth_median = development_growth_median,
   development_share_median = development_share_median,
   habitat_median = habitat_median
 )
 
-# Number priority precincts alphabetically
+# 20. Number priority precincts alphabetically
 priority_labels <- priority_map |>
   filter(priority_area) |>
   arrange(psp_name) |>
@@ -251,9 +267,11 @@ priority_labels <- priority_map |>
     priority_id = row_number()
   )
 
-# Create label positions for priority precincts
+# 21. Create label positions for priority precincts
 priority_label_points <- suppressWarnings(
-  st_point_on_surface(st_geometry(priority_labels))
+  st_point_on_surface(
+    st_geometry(priority_labels)
+  )
 )
 
 priority_label_points_sf <- st_sf(
@@ -262,7 +280,7 @@ priority_label_points_sf <- st_sf(
   geometry = priority_label_points
 )
 
-# Transform map and labels to longitude/latitude
+# 22. Transform map and labels to longitude / latitude
 priority_map_ll <- st_transform(
   priority_map,
   4326
@@ -278,7 +296,7 @@ priority_label_points_ll <- st_transform(
   4326
 )
 
-# Extract coordinates for priority labels
+# 23. Extract coordinates for priority labels
 label_coordinates <- st_coordinates(
   priority_label_points_ll
 )
@@ -290,6 +308,7 @@ priority_label_xy <- priority_label_points_ll |>
     latitude = label_coordinates[, 2]
   )
 
+# Small manual adjustments for overlapping labels
 priority_label_xy <- priority_label_xy |>
   mutate(
     longitude = case_when(
@@ -304,9 +323,11 @@ priority_label_xy <- priority_label_xy |>
     )
   )
 
-# Create LGA label positions
+# 24. Create LGA label positions
 lga_label_points <- suppressWarnings(
-  st_point_on_surface(study_lga_ll)
+  st_point_on_surface(
+    study_lga_ll
+  )
 )
 
 lga_coordinates <- st_coordinates(
@@ -320,7 +341,7 @@ lga_label_xy <- lga_label_points |>
     latitude = lga_coordinates[, 2]
   )
 
-# Numbered key
+# 25. Create numbered priority precinct key
 priority_key_simple <- priority_labels |>
   st_drop_geometry() |>
   select(
@@ -332,7 +353,7 @@ priority_key_simple <- priority_labels |>
 priority_key_simple |>
   print(n = Inf, width = Inf)
 
-# Create two-column precinct key
+# 26. Create two-column precinct key
 priority_key_left <- priority_key_simple |>
   filter(priority_id <= 8) |>
   mutate(
@@ -358,23 +379,26 @@ priority_key_right <- priority_key_simple |>
   paste(collapse = "\n")
 
 
-# Use full five-LGA extent
+# 27. Use full five-LGA extent
 map_bbox <- st_bbox(study_lga_ll)
 
-# Final presentation map
+# 28. Final presentation map
 priority_map_plot <- ggplot() +
+  # PSP/MSA precincts
   geom_sf(
     data = priority_map_ll,
     aes(fill = priority_group),
     colour = "white",
     linewidth = 0.2
   ) +
+  # LGA boundaries
   geom_sf(
     data = study_lga_ll,
     fill = NA,
     colour = "black",
     linewidth = 0.6
   ) +
+  # Priority precinct numbers
   geom_text(
     data = priority_label_xy,
     aes(
@@ -386,6 +410,7 @@ priority_map_plot <- ggplot() +
     fontface = "bold",
     inherit.aes = FALSE
   ) +
+  # LGA labels
   geom_text(
     data = lga_label_xy,
     aes(
@@ -398,6 +423,7 @@ priority_map_plot <- ggplot() +
     colour = "grey25",
     inherit.aes = FALSE
   ) +
+  # Priority key title
   annotate(
     "text",
     x = as.numeric(map_bbox["xmax"]) + 0.05,
@@ -409,6 +435,7 @@ priority_map_plot <- ggplot() +
     fontface = "bold"
   ) +
   
+  # Priority key left column
   annotate(
     "text",
     x = as.numeric(map_bbox["xmax"]) + 0.05,
@@ -419,6 +446,7 @@ priority_map_plot <- ggplot() +
     size = 2.4,
     lineheight = 1.15
   ) +
+  # Priority key right column
   annotate(
     "text",
     x = as.numeric(map_bbox["xmax"]) + 0.48,
