@@ -1,0 +1,15 @@
+psp_name,lga,golden_sun_moth_records,growling_grass_frog_records,focal_species_present,species_group,high_habitat_percent,bcs_percent,connectivity_importance,robust_fragmented,high_development
+Aurora,Whittlesea City Council,352,4,TRUE,Both species,26.355851569933396,0,TRUE,TRUE,TRUE
+Craigieburn (R2),Hume City Council,9,0,TRUE,Golden Sun Moth,10.918114143920596,0,TRUE,TRUE,TRUE
+Casey Central Town Centre,Casey City Council,0,0,FALSE,No focal-species record,40.909090909090914,0,TRUE,TRUE,TRUE
+Cranbourne North (Stage 1),Casey City Council,0,0,FALSE,No focal-species record,8.727272727272728,0,TRUE,TRUE,TRUE
+Devon Meadows,Casey City Council,0,0,FALSE,No focal-species record,24.034334763948497,0,TRUE,TRUE,TRUE
+East Werribee Employment Precinct,Wyndham City Council,0,0,FALSE,No focal-species record,18.29356471438901,0,TRUE,TRUE,TRUE
+Greenvale Central,Hume City Council,0,0,FALSE,No focal-species record,34.68834688346883,0,TRUE,TRUE,TRUE
+Melton East,Melton City Council,0,0,FALSE,No focal-species record,22.00447928331467,9.368965245884258,TRUE,TRUE,TRUE
+Plumpton,Melton City Council,0,0,FALSE,No focal-species record,18.22714681440443,0,TRUE,TRUE,TRUE
+Rockbank,Melton City Council,0,0,FALSE,No focal-species record,33.532934131736525,0,TRUE,TRUE,TRUE
+Sunbury West,Hume City Council,0,0,FALSE,No focal-species record,31.37254901960784,0,TRUE,TRUE,TRUE
+Truganina Employment Area,Wyndham City Council,0,0,FALSE,No focal-species record,17.349607672188316,0,TRUE,TRUE,TRUE
+Warrensbrook,Melton City Council,0,0,FALSE,No focal-species record,18.105009052504524,10.368535642851876,TRUE,TRUE,TRUE
+Wollert,Whittlesea City Council,0,0,FALSE,No focal-species record,30.72100313479624,4.360165902840382,TRUE,TRUE,TRUE
