@@ -1,0 +1,15 @@
+psp_name,lga,high_habitat_percent,golden_sun_moth_records,growling_grass_frog_records,focal_species_evidence,bcs_percent,eso_percent,bcs_coverage,eso_coverage,protection_gap,strong_integrated_priority,evidence_category
+Aurora,Whittlesea City Council,26.355851569933396,352,4,Yes,0,0,No,No,Yes,Yes,Species evidence + protection gap
+Casey Central Town Centre,Casey City Council,40.909090909090914,0,0,No,0,0,No,No,Yes,No,Protection gap
+Greenvale Central,Hume City Council,34.68834688346883,0,0,No,0,0,No,No,Yes,No,Protection gap
+Devon Meadows,Casey City Council,24.034334763948497,0,0,No,0,0,No,No,Yes,No,Protection gap
+East Werribee Employment Precinct,Wyndham City Council,18.29356471438901,0,0,No,0,0,No,No,Yes,No,Protection gap
+Plumpton,Melton City Council,18.22714681440443,0,0,No,0,0,No,No,Yes,No,Protection gap
+Truganina Employment Area,Wyndham City Council,17.349607672188316,0,0,No,0,0,No,No,Yes,No,Protection gap
+Cranbourne North (Stage 1),Casey City Council,8.727272727272728,0,0,No,0,0,No,No,Yes,No,Protection gap
+Craigieburn (R2),Hume City Council,10.918114143920596,9,0,Yes,0,5.453997553063431,No,Yes,No,No,Species evidence + some protection
+Rockbank,Melton City Council,33.532934131736525,0,0,No,0,4.114790755615924,No,Yes,No,No,Other connectivity priority
+Sunbury West,Hume City Council,31.37254901960784,0,0,No,0,17.403083689375492,No,Yes,No,No,Other connectivity priority
+Wollert,Whittlesea City Council,30.72100313479624,0,0,No,4.360165902840382,4.367579240569699,Yes,Yes,No,No,Other connectivity priority
+Melton East,Melton City Council,22.00447928331467,0,0,No,9.368965245884258,3.38407844231571,Yes,Yes,No,No,Other connectivity priority
+Warrensbrook,Melton City Council,18.105009052504524,0,0,No,10.368535642851876,2.967287133711618,Yes,Yes,No,No,Other connectivity priority
