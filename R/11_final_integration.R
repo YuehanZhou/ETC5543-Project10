@@ -295,3 +295,107 @@ write_csv(
   final_priority_table,
   "data/processed/final_priority_table.csv"
 )
+
+
+write_csv(
+  final_integrated_results,
+  "data/processed/final_integrated_results.csv"
+)
+
+write_csv(
+  final_summary,
+  "data/processed/final_integrated_summary.csv"
+)
+
+
+integrated_category_counts <- final_priority_table |>
+  count(
+    evidence_category,
+    name = "precincts"
+  )
+
+integrated_category_counts
+
+integrated_category_plot <- ggplot(
+  integrated_category_counts,
+  aes(
+    x = reorder(evidence_category, precincts),
+    y = precincts
+  )
+) +
+  geom_col() +
+  coord_flip() +
+  geom_text(
+    aes(label = precincts),
+    hjust = -0.2
+  ) +
+  labs(
+    title = "Integrated evidence across connectivity-priority precincts",
+    x = NULL,
+    y = "Number of precincts",
+    caption = "14 connectivity-priority precincts in total"
+  ) +
+  theme_minimal()
+
+print(integrated_category_plot)
+
+ggsave(
+  "figures/integrated_priority_categories.png",
+  integrated_category_plot,
+  width = 9,
+  height = 5,
+  dpi = 300
+)
+
+
+
+final_priority_map <- msa_study |>
+  left_join(
+    final_priority_table |>
+      select(
+        psp_name,
+        evidence_category
+      ),
+    by = "psp_name"
+  ) |>
+  mutate(
+    evidence_category = replace_na(
+      evidence_category,
+      "Not a connectivity priority"
+    )
+  )
+
+final_integrated_map <- ggplot() +
+  geom_sf(
+    data = final_priority_map,
+    aes(fill = evidence_category),
+    colour = "white",
+    linewidth = 0.2
+  ) +
+  geom_sf(
+    data = study_lga_habitat_crs,
+    fill = NA,
+    colour = "black",
+    linewidth = 0.5
+  ) +
+  labs(
+    title = "Integrated connectivity and protection priorities",
+    subtitle = "Connectivity-priority precincts classified by focal-species evidence and planning protection",
+    fill = NULL,
+    caption = "Protection gap = neither BCS nor ESO coverage"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(face = "bold")
+  )
+
+print(final_integrated_map)
+
+ggsave(
+  "figures/final_integrated_priority_map.png",
+  final_integrated_map,
+  width = 10,
+  height = 7,
+  dpi = 300
+)
