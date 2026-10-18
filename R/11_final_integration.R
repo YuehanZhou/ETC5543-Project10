@@ -53,7 +53,8 @@ msa_spatial <- msa |>
   ) |>
   st_as_sf() |>
   filter(
-    !st_is_empty(geometry)
+    !st_is_empty(geometry),
+    psp_name %in% species_connectivity$psp_name
   )
 
 msa_vicgrid <- st_transform(
@@ -84,6 +85,15 @@ msa_study <- suppressWarnings(
     geometry = st_union(geometry),
     .groups = "drop"
   )
+
+stopifnot(
+  n_distinct(msa_study$psp_name) == 101,
+  !anyDuplicated(msa_study$psp_name),
+  setequal(
+    msa_study$psp_name,
+    species_connectivity$psp_name
+  )
+)
 
 # 4. Combine species, connectivity and protection results
 final_integrated_results <- species_connectivity |>
@@ -264,7 +274,7 @@ integrated_category_plot <- ggplot(
     x = NULL,
     y = "Number of precincts",
     caption =
-      "14 connectivity-priority precincts in total"
+      "10 connectivity-priority precincts in total"
   ) +
   theme_minimal()
 

@@ -209,7 +209,7 @@ habitat_by_lga
 high_habitat_study <- habitat_study >= 70
 
 high_habitat_by_lga <- terra::extract(
-  high_habitat,
+  high_habitat_study,
   study_lga_vect,
   fun = mean,
   na.rm = TRUE

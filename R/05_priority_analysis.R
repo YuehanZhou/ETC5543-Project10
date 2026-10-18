@@ -30,28 +30,35 @@ habitat_median <- median(
   na.rm = TRUE
 )
 
-# 4. Create precinct-level ecological screening classification
+screening_thresholds <- tibble(
+  development_growth_median =
+    development_growth_median,
+  development_share_median =
+    development_share_median,
+  habitat_median =
+    habitat_median
+)
+
+screening_thresholds
+
+# 4. Create ecological screening indicators
 priority_analysis <- priority_analysis |>
-  # High development pressure:
-  # above-median absolute urban growth OR
-  # above-median change in urban land share
   mutate(
+    # Development pressure
     high_development =
       growth_ha > development_growth_median |
       urban_share_change > development_share_median,
     
-    # High ecological value:
-    # above-median high-value habitat OR
-    # at least one focal species recorded
+    # Ecological value
     high_ecological_value =
       high_habitat_percent > habitat_median |
       focal_species_present,
     
-    # No coverage by BCS Conservation Areas
+    # No mapped BCS coverage
     no_bcs_coverage =
       bcs_percent == 0,
     
-    # Final baseline ecological screening
+    # Baseline priority
     priority_area =
       high_development &
       high_ecological_value &
@@ -89,7 +96,7 @@ priority_precincts <- priority_analysis |>
 priority_precincts |>
   print(n = Inf, width = Inf)
 
-# 7. Show why each ecological priority precinct was identified
+# 7. Inspect priority conditions
 priority_conditions <- priority_analysis |>
   filter(priority_area) |>
   select(
@@ -105,8 +112,12 @@ priority_conditions <- priority_analysis |>
   ) |>
   arrange(psp_name)
 
-priority_conditions |>
-  print(n = Inf, width = Inf)
+stopifnot(
+  !anyDuplicated(priority_analysis$psp_name),
+  !anyNA(priority_analysis$high_development),
+  !anyNA(priority_analysis$high_ecological_value),
+  !anyNA(priority_analysis$priority_area)
+)
 
 # 8. Save ecological screening results
 write_csv(
@@ -146,7 +157,8 @@ priority_scatter <- ggplot(
     subtitle = "Dashed lines show median thresholds used in the baseline ecological screening",
     x = "Change in urban land share (percentage points)",
     y = "High-value habitat (%)",
-    shape = "Focal species present"
+    shape = "Focal species present",
+    caption = "Development pressure also includes above-median absolute urban growth; priority status additionally requires no mapped BCS coverage."
   ) +
   theme_minimal()
 
@@ -198,7 +210,10 @@ msa_spatial <- msa |>
     by = c("psp_name" = "PSP_NAME")
   ) |>
   st_as_sf() |>
-  filter(!st_is_empty(geometry))
+  filter(
+    !st_is_empty(geometry),
+    psp_name %in% priority_analysis$psp_name
+  )
 
 # 14. Transform to VicGrid
 msa_vicgrid <- st_transform(
@@ -221,6 +236,19 @@ msa_study <- suppressWarnings(
     msa_vicgrid,
     study_area
   )
+) |>
+  group_by(psp_name) |>
+  summarise(
+    lga = first(lga),
+    .groups = "drop"
+  )
+
+stopifnot(
+  n_distinct(msa_study$psp_name) == 101,
+  setequal(
+    msa_study$psp_name,
+    priority_analysis$psp_name
+  )
 )
 
 # 17. Join ecological screening results to spatial boundaries
@@ -242,22 +270,6 @@ priority_map <- priority_map |>
       TRUE ~ "Other study precinct"
     )
   )
-
-# 19. Quality checks
-# Number of mapped precincts
-n_distinct(priority_map$psp_name)
-
-# Check screening classification on map
-priority_map |>
-  st_drop_geometry() |>
-  count(priority_area)
-
-# Check thresholds used in baseline screening
-tibble(
-  development_growth_median = development_growth_median,
-  development_share_median = development_share_median,
-  habitat_median = habitat_median
-)
 
 # 20. Number priority precincts alphabetically
 priority_labels <- priority_map |>
@@ -313,12 +325,10 @@ priority_label_xy <- priority_label_xy |>
   mutate(
     longitude = case_when(
       priority_id == 10 ~ longitude - 0.01,
-      priority_id == 15 ~ longitude + 0.01,
       TRUE ~ longitude
     ),
     latitude = case_when(
       priority_id == 10 ~ latitude + 0.006,
-      priority_id == 15 ~ latitude - 0.006,
       TRUE ~ latitude
     )
   )
@@ -349,9 +359,6 @@ priority_key_simple <- priority_labels |>
     psp_name,
     lga
   )
-
-priority_key_simple |>
-  print(n = Inf, width = Inf)
 
 # 26. Create two-column precinct key
 priority_key_left <- priority_key_simple |>
@@ -456,7 +463,7 @@ priority_map_plot <- ggplot() +
     vjust = 1,
     size = 2.4,
     lineheight = 1.15
-  )+
+  ) +
   scale_fill_manual(
     values = c(
       "Ecological priority precinct" = "#C0392B",

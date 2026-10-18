@@ -1,0 +1,102 @@
+psp_name,priority_scenarios,stable_connectivity_priority
+Alfred Road,0,FALSE
+Aurora,3,TRUE
+Aviators Field,0,FALSE
+Ballan Road,0,FALSE
+Bayview,0,FALSE
+Berwick Waterways,0,FALSE
+Black Forest Road North,0,FALSE
+Black Forest Road South,0,FALSE
+Botanic Ridge,0,FALSE
+Botanic Ridge (Stage 4),0,FALSE
+Brompton Lodge,0,FALSE
+Bulmans Road,0,FALSE
+Cardinia Creek South (McPherson),0,FALSE
+Cardinia Creek South (Part 2),0,FALSE
+Casey Central Town Centre,1,FALSE
+Casey Fields South,0,FALSE
+Casey Fields South Residential,0,FALSE
+Chartwell East,0,FALSE
+Clyde Creek,0,FALSE
+Clyde North,0,FALSE
+Collison Estate,0,FALSE
+Cooper Street West,0,FALSE
+Craigieburn (R2),0,FALSE
+Craigieburn North Employment Area,0,FALSE
+Craigieburn South Employment Area,0,FALSE
+Craigieburn West,0,FALSE
+Cranbourne East,0,FALSE
+Cranbourne North (Stage 1),0,FALSE
+Cranbourne North (Stage 2),0,FALSE
+Cranbourne West,0,FALSE
+Croskell (Casey Central),0,FALSE
+Derrimut Fields,0,FALSE
+Devon Meadows,1,FALSE
+Diggers Rest,0,FALSE
+Donnybrook,0,FALSE
+East Werribee Employment Precinct,3,TRUE
+English Street,0,FALSE
+Epping North East,0,FALSE
+Folkstone Employment Area (E1),0,FALSE
+Granite Hills,0,FALSE
+Greenvale Central,1,FALSE
+Greenvale North  (R1),0,FALSE
+Greenvale West (R3),0,FALSE
+Hampton Park South,0,FALSE
+Kororoit,0,FALSE
+Kororoit (Part 2),0,FALSE
+Lancefield Road,0,FALSE
+Lincoln Heath South,0,FALSE
+Lindum Vale,0,FALSE
+Lockerbie,0,FALSE
+Mambourin East,0,FALSE
+Manor Lakes,0,FALSE
+Melton East,3,TRUE
+Melton North,0,FALSE
+Melton West,0,FALSE
+Mernda Western Strip,0,FALSE
+Merrifield Central Employment Area (E1),0,FALSE
+Merrifield North,0,FALSE
+Merrifield West,0,FALSE
+Minns Road,0,FALSE
+Minta Farm,0,FALSE
+Mt Atkinson,0,FALSE
+Northern Freight,0,FALSE
+Northern Quarries,0,FALSE
+Oakbank,0,FALSE
+Paynes Road,0,FALSE
+Plumpton,3,TRUE
+Point Cook Homestead Road,0,FALSE
+Point Cook West,0,FALSE
+Quandong PSP,0,FALSE
+Quarry Hills,2,TRUE
+Ravenhall (Quarry Site),0,FALSE
+Riverdale,0,FALSE
+Riverwalk,2,TRUE
+Robinsons Road Employment Area North,0,FALSE
+Robinsons Road Employment Area South,0,FALSE
+Rockbank,3,TRUE
+Rockbank North,0,FALSE
+Rockbank South,0,FALSE
+Shenstone Park,3,TRUE
+Somerton Road,0,FALSE
+Sunbury North,0,FALSE
+Sunbury South,3,TRUE
+Sunbury West,1,FALSE
+Tarneit North,0,FALSE
+Tarneit Plains,0,FALSE
+Tarneit West,0,FALSE
+Taylors Hill West,0,FALSE
+Thompsons Road,0,FALSE
+Toolern,0,FALSE
+Toolern Park,0,FALSE
+Truganina,0,FALSE
+Truganina Employment Area,1,FALSE
+Truganina South,0,FALSE
+Warrawee,0,FALSE
+Warrensbrook,3,TRUE
+Werribee Junction,0,FALSE
+Westbrook,0,FALSE
+Wollert,3,TRUE
+Woodlands,0,FALSE
+Woodstock,0,FALSE

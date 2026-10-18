@@ -59,16 +59,52 @@ study_lga_vicgrid <- st_transform(study_lga, 3111)
 study_area <- study_lga_vicgrid |>
   st_union()
 
-# Keep only PSP/MSA precinct areas inside the five study LGAs
-msa_study <- msa_vicgrid |>
-  st_intersection(study_area)
+# Calculate original precinct area
+msa_full_area <- msa_vicgrid |>
+  mutate(
+    full_area_ha =
+      as.numeric(st_area(geometry)) / 10000
+  ) |>
+  st_drop_geometry() |>
+  select(
+    psp_name,
+    full_area_ha
+  )
 
-# Check result
-nrow(msa_study)
-n_distinct(msa_study$psp_name)
+# Clip precincts to the five-LGA study area
+msa_study <- suppressWarnings(
+  st_intersection(
+    msa_vicgrid,
+    study_area
+  )
+)
 
+# Calculate area retained inside the study area
+msa_study <- msa_study |>
+  mutate(
+    study_area_ha =
+      as.numeric(st_area(geometry)) / 10000
+  ) |>
+  left_join(
+    msa_full_area,
+    by = "psp_name"
+  ) |>
+  mutate(
+    study_overlap_percent =
+      study_area_ha / full_area_ha * 100
+  )
 
+# Keep precincts with substantial overlap with the study area
+msa_study <- msa_study |>
+  filter(
+    study_overlap_percent >= 50
+  )
 
+stopifnot(
+  nrow(msa_study) == 101,
+  n_distinct(msa_study$psp_name) == 101,
+  !anyDuplicated(msa_study$psp_name)
+)
 
 library(terra)
 
@@ -98,11 +134,6 @@ habitat_psp <- msa_habitat |>
   bind_cols(habitat_psp) |>
   select(-ID)
 
-habitat_psp
-
-
-
-
 # Create high-value habitat raster
 high_habitat <- habitat >= 70
 
@@ -131,11 +162,6 @@ high_habitat_psp <- high_habitat_psp |>
   ) |>
   select(psp_name, high_habitat_percent)
 
-high_habitat_psp
-
-
-
-
 # Read BCS Conservation Areas
 bcs <- st_read(
   "data/BCS_Conservation_Areas/ll_gda2020/esrishape/whole_of_dataset/victoria/FLORAFAUNA1/MSA_BCS_CONS_AREA.shp",
@@ -146,9 +172,11 @@ bcs <- st_read(
 bcs_vicgrid <- st_transform(bcs, st_crs(msa_study))
 
 # Intersect BCS areas with PSP/MSA precincts
-bcs_psp <- st_intersection(
-  msa_study |> select(psp_name),
-  bcs_vicgrid
+bcs_psp <- suppressWarnings(
+  st_intersection(
+    msa_study |> select(psp_name),
+    bcs_vicgrid
+  )
 )
 
 # Calculate BCS area inside each precinct
@@ -183,13 +211,14 @@ bcs_psp_summary <- psp_area |>
   ) |>
   select(psp_name, bcs_percent)
 
-bcs_psp_summary
+# Read VBA fauna records directly
+vba_full <- st_read(
+  "data/FLORAFAUNA1/VBA_FAUNA25.shp",
+  quiet = TRUE
+)
 
-
-
-
-# Keep recent focal species records only
-focal_species_recent <- vba_candidates |>
+# Keep recent records of the two focal species
+focal_species_recent <- vba_full |>
   filter(
     COMM_NAME %in% c(
       "Golden Sun Moth",
@@ -198,13 +227,13 @@ focal_species_recent <- vba_candidates |>
     START_YEAR >= 2015
   )
 
-# Transform species points to the same CRS as the PSP/MSA precincts
+# Match the precinct coordinate system
 focal_species_psp <- st_transform(
   focal_species_recent,
   st_crs(msa_study)
 )
 
-# Assign each species record to a PSP/MSA precinct
+# Assign records to the analytical precincts
 species_psp_join <- st_join(
   focal_species_psp,
   msa_study |> select(psp_name),
@@ -212,10 +241,14 @@ species_psp_join <- st_join(
   left = FALSE
 )
 
-# Count records by species and precinct
+# Count records by precinct and species
 species_psp_counts <- species_psp_join |>
   st_drop_geometry() |>
-  count(psp_name, COMM_NAME) |>
+  count(
+    psp_name,
+    COMM_NAME,
+    name = "n"
+  ) |>
   pivot_wider(
     names_from = COMM_NAME,
     values_from = n,
@@ -226,15 +259,36 @@ species_psp_counts <- species_psp_join |>
     growling_grass_frog_records = `Growling Grass Frog`
   )
 
-species_psp_counts
+stopifnot(
+  !anyDuplicated(species_psp_counts$psp_name)
+)
 
 # Read processed development indicators
 psp_urban_growth <- read_csv(
-  "data/processed/psp_urban_growth.csv"
+  "data/processed/psp_urban_growth.csv",
+  show_col_types = FALSE
+)
+
+study_precinct_names <- msa_study |>
+  st_drop_geometry() |>
+  distinct(psp_name)
+
+psp_urban_growth_study <- psp_urban_growth |>
+  semi_join(
+    study_precinct_names,
+    by = "psp_name"
+  )
+
+stopifnot(
+  nrow(psp_urban_growth_study) == 101,
+  setequal(
+    psp_urban_growth_study$psp_name,
+    study_precinct_names$psp_name
+  )
 )
 
 # Combine development and biodiversity indicators
-master_psp <- psp_urban_growth |>
+master_psp <- psp_urban_growth_study |>
   left_join(
     habitat_psp,
     by = "psp_name"
@@ -258,13 +312,11 @@ master_psp <- psp_urban_growth |>
       replace_na(growling_grass_frog_records, 0)
   )
 
-# Check master dataset
-nrow(master_psp)
-n_distinct(master_psp$psp_name)
-
-glimpse(master_psp)
-
-colSums(is.na(master_psp))
+stopifnot(
+  nrow(master_psp) == 101,
+  n_distinct(master_psp$psp_name) == 101,
+  !anyDuplicated(master_psp$psp_name)
+)
 
 # Save master dataset
 write_csv(

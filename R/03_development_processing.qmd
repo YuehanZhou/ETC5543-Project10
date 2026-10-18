@@ -126,16 +126,53 @@ study_lga_vicgrid <- st_transform(study_lga, 3111)
 study_area <- study_lga_vicgrid |>
   st_union()
 
-# Keep only the parts of PSP/MSA precincts within the study area
-msa_study <- msa_vicgrid |>
-  st_intersection(study_area)
+# Calculate original precinct area
+msa_full_area <- msa_vicgrid |>
+  mutate(
+    full_area_ha =
+      as.numeric(st_area(geometry)) / 10000
+  ) |>
+  st_drop_geometry() |>
+  select(
+    psp_name,
+    full_area_ha
+  )
 
-# Check number of precincts
-nrow(msa_study)
-n_distinct(msa_study$psp_name)
+# Clip precincts to the five-LGA study area
+msa_study <- suppressWarnings(
+  st_intersection(
+    msa_vicgrid,
+    study_area
+  )
+)
+
+# Calculate proportion of each precinct inside the study area
+msa_study <- msa_study |>
+  mutate(
+    study_area_ha =
+      as.numeric(st_area(geometry)) / 10000
+  ) |>
+  left_join(
+    msa_full_area,
+    by = "psp_name"
+  ) |>
+  mutate(
+    study_overlap_percent =
+      study_area_ha / full_area_ha * 100
+  )
+
+# Keep precincts with substantial overlap
+msa_study <- msa_study |>
+  filter(
+    study_overlap_percent >= 50
+  )
+
+stopifnot(
+  n_distinct(msa_study$psp_name) == 101
+)
 ```
 
-Of the 117 matched PSP/MSA precincts, 105 intersect the five study LGAs and are retained for the spatial analysis. These precincts are transformed to EPSG:3111 to match the Victorian Land Cover Time Series.
+Of the 117 matched PSP/MSA precincts, 105 intersect the five study LGAs. Four precincts overlap the study area only marginally (<0.3% of their original area) and are treated as boundary slivers. Precincts with at least 50% of their original area inside the five-LGA study area are retained, leaving 101 precincts for precinct-level analysis.
 
 ## Urban expansion analysis
 

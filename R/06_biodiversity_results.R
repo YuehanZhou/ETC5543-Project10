@@ -272,7 +272,7 @@ label_points <- biodiversity_gap_map |>
   st_point_on_surface()
 
 # Create biodiversity protection-gap map
-ggplot() +
+gap_map <- ggplot() +
   geom_sf(
     data = biodiversity_gap_map,
     aes(fill = top_gap),
@@ -299,6 +299,8 @@ ggplot() +
   theme(
     axis.title = element_blank()
   )
+
+print(gap_map)
 
 ggsave(
   "figures/conservation_gap_map.png",
@@ -363,7 +365,7 @@ species_map <- msa_habitat_crs |>
 species_map_ll <- st_transform(species_map, 4326)
 
 # Plot focal-species occurrence
-ggplot() +
+species_plot <- ggplot() +
   geom_sf(
     data = species_map_ll,
     aes(fill = species_group),
@@ -377,6 +379,8 @@ ggplot() +
     fill = "Focal-species record"
   ) +
   theme_minimal()
+
+print(species_plot)
 
 ggsave(
   "figures/focal_species_map.png",
@@ -411,6 +415,12 @@ explorer_data <- master_psp |>
       TRUE ~ "No focal-species record"
     )
   )
+
+stopifnot(
+  nrow(explorer_data) == 101,
+  n_distinct(explorer_data$psp_name) == 101,
+  !anyDuplicated(explorer_data$psp_name)
+)
 
 write_csv(
   explorer_data,

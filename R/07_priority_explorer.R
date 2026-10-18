@@ -41,6 +41,16 @@ explorer_map <- st_transform(
   4326
 )
 
+stopifnot(
+  nrow(explorer_data) == 101,
+  n_distinct(explorer_data$psp_name) == 101,
+  n_distinct(explorer_map$PSP_NAME) == 101,
+  setequal(
+    explorer_map$PSP_NAME,
+    explorer_data$psp_name
+  )
+)
+
 # Create popup information for each precinct
 explorer_map <- explorer_map |>
   mutate(
@@ -84,141 +94,6 @@ explorer_map <- explorer_map |>
     )
   )
 
-# Get study-area extent
-map_bbox <- st_bbox(explorer_map)
-
-# Create interactive map with a basemap
-leaflet(
-  explorer_map,
-  options = leafletOptions(
-    preferCanvas = TRUE
-  )
-) |>
-  addProviderTiles(
-    providers$Esri.WorldGrayCanvas
-  ) |>
-  addPolygons(
-    color = "white",
-    weight = 1,
-    fillColor = "steelblue",
-    fillOpacity = 0.65,
-    popup = ~popup_text,
-    label = ~PSP_NAME,
-    highlightOptions = highlightOptions(
-      weight = 3,
-      color = "black",
-      fillOpacity = 0.9,
-      bringToFront = TRUE
-    )
-  ) |>
-  fitBounds(
-    lng1 = as.numeric(map_bbox["xmin"]),
-    lat1 = as.numeric(map_bbox["ymin"]),
-    lng2 = as.numeric(map_bbox["xmax"]),
-    lat2 = as.numeric(map_bbox["ymax"])
-  )
-
-
-# Create colour scales
-development_pal <- colorNumeric(
-  palette = "YlOrRd",
-  domain = explorer_map$growth_ha,
-  na.color = "transparent"
-)
-
-gap_pal <- colorNumeric(
-  palette = "YlGnBu",
-  domain = explorer_map$high_habitat_outside_bcs_ha,
-  na.color = "transparent"
-)
-
-# Get study-area extent
-map_bbox <- st_bbox(explorer_map)
-
-# Create interactive explorer map
-leaflet(
-  explorer_map,
-  options = leafletOptions(
-    preferCanvas = TRUE
-  )
-) |>
-  
-  # Background map
-  addProviderTiles(
-    providers$Esri.WorldGrayCanvas
-  ) |>
-  
-  # Development pressure layer
-  addPolygons(
-    group = "Development pressure",
-    color = "white",
-    weight = 1,
-    fillColor = ~development_pal(growth_ha),
-    fillOpacity = 0.75,
-    popup = ~popup_text,
-    label = ~PSP_NAME,
-    highlightOptions = highlightOptions(
-      weight = 3,
-      color = "black",
-      fillOpacity = 0.9,
-      bringToFront = TRUE
-    )
-  ) |>
-  
-  # Conservation-gap layer
-  addPolygons(
-    group = "Conservation gap",
-    color = "white",
-    weight = 1,
-    fillColor = ~gap_pal(high_habitat_outside_bcs_ha),
-    fillOpacity = 0.75,
-    popup = ~popup_text,
-    label = ~PSP_NAME,
-    highlightOptions = highlightOptions(
-      weight = 3,
-      color = "black",
-      fillOpacity = 0.9,
-      bringToFront = TRUE
-    )
-  ) |>
-  
-  # Layer switcher
-  addLayersControl(
-    overlayGroups = c(
-      "Development pressure",
-      "Conservation gap"
-    ),
-    options = layersControlOptions(
-      collapsed = FALSE
-    )
-  ) |>
-  
-  # Development legend
-  addLegend(
-    position = "bottomright",
-    pal = development_pal,
-    values = ~growth_ha,
-    title = "Urban growth (ha)"
-  ) |>
-  
-  # Conservation-gap legend
-  addLegend(
-    position = "bottomleft",
-    pal = gap_pal,
-    values = ~high_habitat_outside_bcs_ha,
-    title = "High-value habitat<br>outside BCS (ha)"
-  ) |>
-  
-  # Zoom to study area
-  fitBounds(
-    lng1 = as.numeric(map_bbox["xmin"]),
-    lat1 = as.numeric(map_bbox["ymin"]),
-    lng2 = as.numeric(map_bbox["xmax"]),
-    lat2 = as.numeric(map_bbox["ymax"])
-  )
-
-
-
 # Colour scales
 development_pal <- colorNumeric(
   palette = "YlOrRd",
@@ -242,16 +117,18 @@ gap_pal <- colorNumeric(
 map_bbox <- st_bbox(explorer_map)
 
 # Interactive explorer
-leaflet(
+priority_explorer_map <- leaflet(
   explorer_map,
-  options = leafletOptions(preferCanvas = TRUE)
+  options = leafletOptions(
+    preferCanvas = TRUE
+  )
 ) |>
   
   addProviderTiles(
     providers$Esri.WorldGrayCanvas
   ) |>
   
-  # Development layer
+  # Development pressure layer
   addPolygons(
     group = "Development pressure",
     color = "white",
@@ -268,7 +145,7 @@ leaflet(
     )
   ) |>
   
-  # Biodiversity layer
+  # Biodiversity importance layer
   addPolygons(
     group = "Biodiversity importance",
     color = "white",
@@ -285,9 +162,9 @@ leaflet(
     )
   ) |>
   
-  # Conservation-gap layer
+  # Habitat outside BCS layer
   addPolygons(
-    group = "Conservation gap",
+    group = "Habitat outside BCS",
     color = "white",
     weight = 1,
     fillColor = ~gap_pal(high_habitat_outside_bcs_ha),
@@ -307,13 +184,14 @@ leaflet(
     baseGroups = c(
       "Development pressure",
       "Biodiversity importance",
-      "Conservation gap"
+      "Habitat outside BCS"
     ),
     options = layersControlOptions(
       collapsed = FALSE
     )
   ) |>
   
+  # Development legend
   addLegend(
     group = "Development pressure",
     position = "bottomright",
@@ -322,6 +200,7 @@ leaflet(
     title = "Urban growth (ha)"
   ) |>
   
+  # Biodiversity legend
   addLegend(
     group = "Biodiversity importance",
     position = "bottomright",
@@ -330,8 +209,9 @@ leaflet(
     title = "High-value habitat (%)"
   ) |>
   
+  # Habitat outside BCS legend
   addLegend(
-    group = "Conservation gap",
+    group = "Habitat outside BCS",
     position = "bottomright",
     pal = gap_pal,
     values = ~high_habitat_outside_bcs_ha,
@@ -344,3 +224,5 @@ leaflet(
     lng2 = as.numeric(map_bbox["xmax"]),
     lat2 = as.numeric(map_bbox["ymax"])
   )
+
+priority_explorer_map

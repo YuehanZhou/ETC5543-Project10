@@ -11,7 +11,7 @@ connectivity <- read_csv(
 names(species)
 names(connectivity)
 
-# 1. Start with all 105 precincts, then add species records
+# 1. Start with all 101 analytical precincts, then add species records
 species_connectivity <- connectivity |>
   left_join(
     species |>
@@ -210,7 +210,7 @@ species_connectivity_summary <- species_connectivity |>
         connectivity_priority &
           !focal_species_present,
         na.rm = TRUE
-      )
+      )# 1. Start with all 101 analytical precincts, then add species records
   )
 
 species_connectivity_summary

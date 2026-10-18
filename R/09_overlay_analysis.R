@@ -22,11 +22,13 @@ lga_boundary <- st_read(
 )
 
 priority_analysis <- read_csv(
-  "data/processed/priority_analysis.csv"
+  "data/processed/priority_analysis.csv",
+  show_col_types = FALSE
 )
 
 connectivity_results <- read_csv(
-  "data/processed/connectivity_results.csv"
+  "data/processed/connectivity_results.csv",
+  show_col_types = FALSE
 )
 
 # 2. Prepare study area
@@ -56,7 +58,10 @@ msa_spatial <- msa |>
     by = c("psp_name" = "PSP_NAME")
   ) |>
   st_as_sf() |>
-  filter(!st_is_empty(geometry))
+  filter(
+    !st_is_empty(geometry),
+    psp_name %in% priority_analysis$psp_name
+  )
 
 msa_vicgrid <- st_transform(
   msa_spatial,
@@ -84,16 +89,24 @@ msa_study <- suppressWarnings(
     .groups = "drop"
   )
 
+stopifnot(
+  n_distinct(msa_study$psp_name) == 101,
+  !anyDuplicated(msa_study$psp_name),
+  setequal(
+    msa_study$psp_name,
+    priority_analysis$psp_name
+  )
+)
+
 # 3. Filter Environmental Significance Overlays
 eso <- planning_overlay |>
   filter(
     SCHEMECODE == "ESO"
   )
 
-eso_vicgrid <- st_transform(
-  eso,
-  3111
-)
+eso_vicgrid <- eso |>
+  st_make_valid() |>
+  st_transform(3111)
 
 eso_study <- suppressWarnings(
   st_intersection(
@@ -128,7 +141,6 @@ precinct_area <- msa_study |>
 
 # 6. Create total ESO coverage layer
 eso_union <- eso_study |>
-  st_make_valid() |>
   st_union() |>
   st_sf()
 
@@ -250,16 +262,28 @@ overlay_results <- eso_results |>
     by = "psp_name"
   )
 
-overlay_results <- overlay_results |>
-  mutate(
-    bcs_percent = replace_na(bcs_percent, 0),
-    priority_area = replace_na(priority_area, FALSE),
-    high_development = replace_na(high_development, FALSE),
-    high_ecological_value = replace_na(high_ecological_value, FALSE),
-    robust_fragmented = replace_na(robust_fragmented, FALSE),
-    connectivity_importance = replace_na(connectivity_importance, FALSE),
-    connectivity_priority = replace_na(connectivity_priority, FALSE)
+stopifnot(
+  nrow(overlay_results) == 101,
+  n_distinct(overlay_results$psp_name) == 101,
+  !anyDuplicated(overlay_results$psp_name)
+)
+
+stopifnot(
+  !any(is.na(overlay_results$bcs_percent)),
+  !any(is.na(overlay_results$priority_area)),
+  !any(is.na(overlay_results$high_development)),
+  !any(is.na(overlay_results$high_ecological_value)),
+  !any(is.na(overlay_results$robust_fragmented)),
+  !any(is.na(overlay_results$connectivity_importance)),
+  !any(is.na(overlay_results$connectivity_priority))
+)
+
+stopifnot(
+  all(
+    overlay_results$eso_percent >= 0 &
+      overlay_results$eso_percent <= 100 + 1e-6
   )
+)
 
 # 10. Combined protection categories
 overlay_results <- overlay_results |>
@@ -293,6 +317,7 @@ overlay_results <- overlay_results |>
     
     low_eso_gap =
       connectivity_priority &
+      has_eso &
       eso_percent < 10
   )
 
