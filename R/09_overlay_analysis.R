@@ -282,6 +282,11 @@ overlay_results <- overlay_results |>
 # 11. Potential planning protection gap
 overlay_results <- overlay_results |>
   mutate(
+    protection_gap =
+      connectivity_priority &
+      bcs_percent == 0 &
+      !has_eso,
+    
     no_eso_gap =
       connectivity_priority &
       !has_eso,
@@ -311,6 +316,12 @@ overlay_summary <- overlay_results |>
     connectivity_priority =
       sum(
         connectivity_priority,
+        na.rm = TRUE
+      ),
+    
+    connectivity_protection_gap =
+      sum(
+        protection_gap,
         na.rm = TRUE
       ),
     
@@ -351,6 +362,7 @@ connectivity_eso_table <- overlay_results |>
     bcs_percent,
     protection_type,
     priority_area,
+    protection_gap,
     no_eso_gap,
     low_eso_gap
   ) |>
@@ -403,17 +415,17 @@ overlay_map <- msa_study |>
       select(
         psp_name,
         connectivity_priority,
-        no_eso_gap
+        protection_gap
       ),
     by = "psp_name"
   ) |>
   mutate(
     overlay_group = case_when(
-      no_eso_gap ~
-        "Connectivity priority without ESO",
+      protection_gap ~
+        "Connectivity priority with no mapped BCS/ESO",
       
       connectivity_priority ~
-        "Connectivity priority with ESO",
+        "Other connectivity priority",
       
       TRUE ~
         "Other study precinct"
@@ -431,24 +443,18 @@ overlay_plot <- ggplot() +
     linewidth = 0.2
   ) +
   geom_sf(
-    data = eso_study,
-    fill = NA,
-    colour = "grey30",
-    linewidth = 0.25
-  ) +
-  geom_sf(
     data = study_lga_vicgrid,
     fill = NA,
     colour = "black",
     linewidth = 0.5
   ) +
   labs(
-    title = "Connectivity priorities and ESO coverage",
+    title = "Connectivity priorities and planning protection gaps",
     subtitle =
-      "Potential connectivity priorities are compared with Environmental Significance Overlay coverage",
+      "Potential connectivity priorities are compared with mapped BCS and ESO coverage",
     fill = NULL,
     caption =
-      "No ESO does not imply absence of all environmental protection."
+      "No mapped BCS/ESO coverage does not imply absence of all environmental protection."
   ) +
   theme_minimal() +
   theme(
