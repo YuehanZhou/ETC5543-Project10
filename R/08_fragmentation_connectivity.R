@@ -1355,12 +1355,7 @@ connectivity_plot <- ggplot() +
   ) +
   labs(
     title = "Potential habitat connectivity priorities",
-    subtitle =connectivity_check <- readr::read_csv(
-  "data/processed/connectivity_results.csv",
-  show_col_types = FALSE
-)
-
-nrow(connectivity_check)
+    subtitle =
       "Major habitat patches are combined with fragmentation and development pressure",
     fill = NULL,
     caption =
