@@ -1,6 +1,20 @@
 library(tidyverse)
 library(sf)
 
+# Read study LGA boundaries
+lga_boundary <- st_read(
+  "data/LGA_2025_AUST_GDA2020/LGA_2025_AUST_GDA2020.shp",
+  quiet = TRUE
+)
+
+study_lga <- lga_boundary |>
+  filter(
+    LGA_NAME25 %in% c(
+      "Casey", "Hume", "Melton",
+      "Whittlesea", "Wyndham"
+    )
+  )
+
 # Read species data
 golden_moth <- read_csv(
   "data/golden_sun_moth_victoria_2026-09-01/golden_sun_moth_victoria_2026-09-01.csv"

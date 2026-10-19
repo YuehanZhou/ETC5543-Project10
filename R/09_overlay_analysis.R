@@ -3,7 +3,7 @@ library(sf)
 
 # 1. Read datasets
 planning_overlay <- st_read(
-  "data/Planning_Overlay/ll_gda2020/esrishape/whole_of_dataset/victoria/VMPLAN/PLAN_OVERLAY.shp",
+  "data/ESO_selected/eso_selected.gpkg",
   quiet = TRUE
 )
 

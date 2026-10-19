@@ -211,9 +211,9 @@ bcs_psp_summary <- psp_area |>
   ) |>
   select(psp_name, bcs_percent)
 
-# Read VBA fauna records directly
+# Read selected VBA fauna records
 vba_full <- st_read(
-  "data/FLORAFAUNA1/VBA_FAUNA25.shp",
+  "data/VBA_selected/vba_selected.gpkg",
   quiet = TRUE
 )
 

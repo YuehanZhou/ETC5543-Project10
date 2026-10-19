@@ -7,6 +7,97 @@ master_psp <- read_csv(
   "data/processed/master_psp.csv"
 )
 
+# Read spatial datasets
+msa <- read_csv(
+  "data/meeting1/msa_precinct_attributes.csv",
+  show_col_types = FALSE
+)
+
+psp_boundary <- st_read(
+  "data/PSP_Boundary/PSP_Boundary.geojson",
+  quiet = TRUE
+)
+
+lga_boundary <- st_read(
+  "data/LGA_2025_AUST_GDA2020/LGA_2025_AUST_GDA2020.shp",
+  quiet = TRUE
+)
+
+bcs <- st_read(
+  "data/BCS_Conservation_Areas/ll_gda2020/esrishape/whole_of_dataset/victoria/FLORAFAUNA1/MSA_BCS_CONS_AREA.shp",
+  quiet = TRUE
+)
+
+# Prepare the five-LGA study area
+study_lga <- lga_boundary |>
+  filter(
+    LGA_NAME25 %in% c(
+      "Casey", "Hume", "Melton",
+      "Whittlesea", "Wyndham"
+    )
+  ) |>
+  st_transform(3111)
+
+study_area <- st_union(study_lga)
+
+# Standardise PSP names
+psp_boundary <- psp_boundary |>
+  mutate(
+    PSP_NAME = case_when(
+      PSP_NAME == "Quandong PSP (Council-led)" ~ "Quandong PSP",
+      PSP_NAME == "Croskell" ~ "Croskell (Casey Central)",
+      TRUE ~ PSP_NAME
+    )
+  )
+
+# Match MSA attributes to PSP polygons
+msa_spatial <- msa |>
+  left_join(
+    psp_boundary,
+    by = c("psp_name" = "PSP_NAME")
+  ) |>
+  st_as_sf() |>
+  filter(!st_is_empty(geometry)) |>
+  st_transform(3111)
+
+# Calculate original precinct areas
+msa_full_area <- msa_spatial |>
+  mutate(
+    full_area_ha = as.numeric(st_area(geometry)) / 10000
+  ) |>
+  st_drop_geometry() |>
+  select(psp_name, full_area_ha)
+
+# Clip precincts to the study area
+msa_study <- suppressWarnings(
+  st_intersection(msa_spatial, study_area)
+) |>
+  mutate(
+    study_area_ha = as.numeric(st_area(geometry)) / 10000
+  ) |>
+  left_join(
+    msa_full_area,
+    by = "psp_name"
+  ) |>
+  mutate(
+    study_overlap_percent =
+      study_area_ha / full_area_ha * 100
+  ) |>
+  filter(
+    study_overlap_percent >= 50
+  )
+
+# Confirm the same 101 analytical precincts as the master dataset
+stopifnot(
+  nrow(msa_study) == 101,
+  n_distinct(msa_study$psp_name) == 101,
+  !anyDuplicated(msa_study$psp_name),
+  setequal(
+    msa_study$psp_name,
+    master_psp$psp_name
+  )
+)
+
 # Keep variables relevant to biodiversity analysis
 biodiversity_psp <- master_psp |>
   select(
@@ -62,12 +153,12 @@ habitat <- rast(
 # Transform precincts and BCS polygons to match the habitat raster CRS
 msa_habitat_crs <- st_transform(
   msa_study,
-  7899
+  crs(habitat)
 )
 
 bcs_habitat_crs <- st_transform(
   bcs,
-  7899
+  crs(habitat)
 )
 
 # Create high-value habitat layer

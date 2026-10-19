@@ -17,7 +17,7 @@ This document explores the threatened fauna data and identifies which species ha
 library(tidyverse)
 library(sf)
 
-fauna <- read_csv("../data/meeting1/vba_threatened_fauna_melbourne_fringe.csv")
+fauna <- read_csv("data/meeting1/vba_threatened_fauna_melbourne_fringe.csv")
 
 glimpse(fauna)
 ```
@@ -53,7 +53,7 @@ fauna |>
 ```{r}
 # Load LGA boundaries
 lga_boundary <- st_read(
-  "../data/LGA_2025_AUST_GDA2020/LGA_2025_AUST_GDA2020.shp",
+  "data/LGA_2025_AUST_GDA2020/LGA_2025_AUST_GDA2020.shp",
   quiet = TRUE
 )
 
@@ -153,7 +153,7 @@ Golden Sun Moth and Growling Grass Frog are therefore retained as the leading fo
 library(terra)
 
 habitat <- rast(
-  "../data/habitat_value/habitat_value_75m_20241024_vg2020.tif"
+  "data/habitat_value/habitat_value_75m_20241024_vg2020.tif"
 )
 
 habitat
@@ -232,8 +232,9 @@ Using a threshold of Habitat Value ≥ 70, Wyndham has the largest proportion of
 ## High-accuracy VBA fauna validation
 
 ```{r}
+# Read selected VBA records for the four candidate species
 vba_full <- st_read(
-  "../data/FLORAFAUNA1/VBA_FAUNA25.shp",
+  "data/VBA_selected/vba_selected.gpkg",
   quiet = TRUE
 )
 
@@ -304,7 +305,7 @@ The high-accuracy VBA dataset supports the selection of Golden Sun Moth and Grow
 
 ```{r}
 bcs <- st_read(
-  "../data/BCS_Conservation_Areas/ll_gda2020/esrishape/whole_of_dataset/victoria/FLORAFAUNA1/MSA_BCS_CONS_AREA.shp",
+  "data/BCS_Conservation_Areas/ll_gda2020/esrishape/whole_of_dataset/victoria/FLORAFAUNA1/MSA_BCS_CONS_AREA.shp",
   quiet = TRUE
 )
 
