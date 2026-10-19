@@ -10,6 +10,73 @@ explorer_data <- read_csv(
   show_col_types = FALSE
 )
 
+# Read final integrated connectivity and protection results
+integrated_data <- read_csv(
+  "../data/processed/final_integrated_results.csv",
+  show_col_types = FALSE
+)
+
+integrated_data <- read_csv(
+  "../data/processed/final_integrated_results.csv",
+  show_col_types = FALSE
+)
+
+stopifnot(
+  nrow(explorer_data) == 101,
+  nrow(integrated_data) == 101,
+  setequal(
+    explorer_data$psp_name,
+    integrated_data$psp_name
+  )
+)
+
+
+# Add final connectivity / protection indicators
+explorer_data <- explorer_data |>
+  left_join(
+    integrated_data |>
+      select(
+        psp_name,
+        connectivity_priority,
+        connectivity_importance,
+        robust_fragmented,
+        eso_percent,
+        protection_type,
+        protection_gap,
+        connectivity_and_species,
+        connectivity_species_protection_gap
+      ),
+    by = "psp_name"
+  ) |>
+  mutate(
+    connectivity_priority =
+      replace_na(connectivity_priority, FALSE),
+    
+    connectivity_importance =
+      replace_na(connectivity_importance, FALSE),
+    
+    robust_fragmented =
+      replace_na(robust_fragmented, FALSE),
+    
+    eso_percent =
+      replace_na(eso_percent, 0),
+    
+    protection_type =
+      replace_na(protection_type, "Neither"),
+    
+    protection_gap =
+      replace_na(protection_gap, FALSE),
+    
+    connectivity_and_species =
+      replace_na(connectivity_and_species, FALSE),
+    
+    connectivity_species_protection_gap =
+      replace_na(
+        connectivity_species_protection_gap,
+        FALSE
+      )
+  )
+
 # Read PSP boundaries
 psp_boundary <- st_read(
   "../data/PSP_Boundary/PSP_Boundary.geojson",
@@ -133,12 +200,12 @@ study_bbox <- st_bbox(
 ui <- fluidPage(
   
   titlePanel(
-    "Melbourne Growth & Biodiversity Priority Explorer"
+    "Melbourne Growth, Connectivity & Biodiversity Priority Explorer"
   ),
   
   p(
     tags$em(
-      "A precinct-level screening and decision-support tool. Priority scores combine development pressure, habitat importance and conservation gap. Species records provide contextual evidence only; the tool does not directly model fauna movement or ecological connectivity."
+      "A precinct-level decision-support tool for identifying where urban expansion overlaps with habitat, potential connectivity concerns and gaps in mapped BCS/ESO coverage. Results support screening for areas that may warrant further ecological corridor assessment and planning attention. Species records indicate observed occurrence rather than abundance."
     )
   ),
   
@@ -201,6 +268,31 @@ ui <- fluidPage(
       
       hr(),
       
+      h4("Integrated priorities"),
+      
+      selectInput(
+        "integrated_filter",
+        "Show precincts",
+        choices = c(
+          "All precincts",
+          "Connectivity priorities only",
+          "Connectivity priorities with no mapped BCS/ESO coverage",
+          "Connectivity + focal species"
+        ),
+        selected = "All precincts"
+      ),
+      
+      p(
+        "Connectivity priorities combine habitat structure, fragmentation and development pressure. The coverage filter highlights connectivity-priority precincts with no mapped BCS or ESO coverage."      ),
+      
+      p(
+        tags$small(
+          "Map colour shows the weighted priority score; filters only change which precincts are displayed."
+        )
+      ),
+      
+      hr(),
+      
       h4("What should matter most?"),
       
       p(
@@ -252,7 +344,7 @@ ui <- fluidPage(
       
       sliderInput(
         "gap_weight",
-        "Conservation gap",
+        "Habitat outside BCS",
         min = 0,
         max = 100,
         value = 30
@@ -265,11 +357,13 @@ ui <- fluidPage(
       hr(),
       
       p(
-        "Higher slider values give that factor more influence in the priority ranking."
+        "Changing the weights changes the ranking only. It does not change the underlying data."
       ),
       
       p(
-        "Changing the weights changes the ranking only. It does not change the underlying data."
+        tags$small(
+          "The priority score is a relative screening score across the 101 study precincts, not a probability of ecological risk or a confirmed corridor designation."
+        )
       )
     ),
     
@@ -418,7 +512,7 @@ server <- function(input, output, session) {
       br(),
       
       paste0(
-        "Habitat importance: ",
+        "Development pressure: ",
         round(development_pct),
         "%"
       ),
@@ -426,7 +520,7 @@ server <- function(input, output, session) {
       br(),
       
       paste0(
-        "Biodiversity: ",
+        "Habitat importance: ",
         round(biodiversity_pct),
         "%"
       ),
@@ -434,7 +528,7 @@ server <- function(input, output, session) {
       br(),
       
       paste0(
-        "Conservation gap: ",
+        "Habitat outside BCS: ",
         round(gap_pct),
         "%"
       )
@@ -471,10 +565,10 @@ server <- function(input, output, session) {
   })
   
   # Filter displayed precincts by focal species
+  # and integrated priority evidence
   display_data <- reactive({
     
     data <- scored_data()
-    
     if (
       input$species_filter ==
       "Golden Sun Moth only"
@@ -509,12 +603,48 @@ server <- function(input, output, session) {
         )
     }
     
+    # Integrated-priority filter
+    
+    if (
+      input$integrated_filter ==
+      "Connectivity priorities only"
+    ) {
+      
+      data <- data |>
+        filter(
+          connectivity_priority
+        )
+      
+    } else if (
+      input$integrated_filter ==
+      "Connectivity priorities with no mapped BCS/ESO coverage"
+    ) {
+      
+      data <- data |>
+        filter(
+          protection_gap
+        )
+      
+    } else if (
+      input$integrated_filter ==
+      "Connectivity + focal species"
+    ) {
+      
+      data <- data |>
+        filter(
+          connectivity_and_species
+        )
+    }
+    
     data
   })
   
   # Reset search when species filter changes
   observeEvent(
-    input$species_filter,
+    list(
+      input$species_filter,
+      input$integrated_filter
+    ),
     {
       
       filtered_precincts <- display_data()
@@ -549,8 +679,11 @@ server <- function(input, output, session) {
     
     map_data <- display_data()
     
-    req(
-      nrow(map_data) > 0
+    validate(
+      need(
+        nrow(map_data) > 0,
+        "No precincts match the selected filters."
+      )
     )
     
     priority_pal <- colorNumeric(
@@ -617,7 +750,25 @@ server <- function(input, output, session) {
           "<br>",
           
           "Species category: ",
-          species_group
+          species_group,
+          "<br><br>",
+          
+          "<strong>Connectivity & mapped coverage</strong><br>",
+          
+          "Connectivity priority: ",
+          ifelse(connectivity_priority, "Yes", "No"),
+          "<br>",
+          
+          "BCS coverage: ",
+          round(bcs_percent, 1),
+          "%<br>",
+          
+          "ESO coverage: ",
+          round(eso_percent, 1),
+          "%<br>",
+          
+          "Mapped coverage status: ",
+          protection_type
         )
       )
     
@@ -938,7 +1089,7 @@ server <- function(input, output, session) {
           width = 3,
           
           h4(
-            "Conservation gap"
+            "Habitat outside BCS"
           ),
           
           p(
@@ -1013,8 +1164,78 @@ server <- function(input, output, session) {
       
       br(),
       
+      hr(),
+      
+fluidRow(
+
+  column(
+    width = 3,
+
+    strong("Connectivity priority"),
+    br(),
+
+    ifelse(
+      precinct$connectivity_priority,
+      "Yes",
+      "No"
+    )
+  ),
+
+  column(
+    width = 3,
+
+    strong("BCS coverage"),
+    br(),
+
+    paste0(
+      round(
+        precinct$bcs_percent,
+        1
+      ),
+      "%"
+    )
+  ),
+
+  column(
+    width = 3,
+
+    strong("ESO coverage"),
+    br(),
+
+    paste0(
+      round(
+        precinct$eso_percent,
+        1
+      ),
+      "%"
+    )
+  ),
+
+  column(
+    width = 3,
+
+    strong("Mapped coverage status"),
+    br(),
+
+    precinct$protection_type
+  )
+),
+      
+      br(),
+      
+      if (
+        precinct$connectivity_species_protection_gap
+      ) {
+        
+        tags$div(
+          style = "font-weight: bold; padding: 8px; background: #f2f2f2;",
+          
+          "Strong integrated priority: connectivity concern + focal-species evidence + no mapped BCS/ESO coverage"
+        )
+      },
+      
       tags$small(
-        "Species records indicate recorded occurrences and should not be interpreted as population abundance."
+        "Species records indicate recorded occurrences rather than population abundance. A precinct with no focal-species record should not be interpreted as species absence."
       )
     )
   })
@@ -1063,28 +1284,22 @@ server <- function(input, output, session) {
     }
   )
   
-  # Dynamic Top 10 table
+  # Dynamic priority table
   output$priority_table <- renderDT({
     
     table_data <-
       display_data() |>
-      
       st_drop_geometry() |>
-      
       arrange(
         desc(priority_score)
       ) |>
-      
       transmute(
         
-        Rank =
-          row_number(),
+        `Rank in current view` = row_number(),
         
-        Precinct =
-          PSP_NAME,
+        Precinct = PSP_NAME,
         
-        `Study LGA` =
-          study_lga,
+        `Study LGA` = study_lga,
         
         `Priority score` =
           round(
@@ -1110,23 +1325,51 @@ server <- function(input, output, session) {
             1
           ),
         
-        Species =
-          species_group
-      ) |>
-      
-      slice_head(
-        n = 10
+        Species = species_group,
+        
+        `Connectivity priority` =
+          if_else(
+            connectivity_priority,
+            "Yes",
+            "No"
+          ),
+        
+        `BCS coverage (%)` =
+          round(
+            bcs_percent,
+            1
+          ),
+        
+        `ESO coverage (%)` =
+          round(
+            eso_percent,
+            1
+          ),
+        
+        `Mapped coverage status` =
+          protection_type
       )
     
+    # Only limit to Top 10 when no filters are applied
+    if (
+      input$integrated_filter == "All precincts" &&
+      input$species_filter == "All precincts"
+    ) {
+      
+      table_data <-
+        table_data |>
+        slice_head(
+          n = 10
+        )
+    }
     
     datatable(
-      
       table_data,
       
       rownames = FALSE,
       
       options = list(
-        pageLength = 10,
+        pageLength = nrow(table_data),
         searching = FALSE,
         paging = FALSE,
         ordering = TRUE
