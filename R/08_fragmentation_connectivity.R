@@ -1348,12 +1348,6 @@ connectivity_plot <- ggplot() +
     linewidth = 0.2
   ) +
   geom_sf(
-    data = major_patch_sf,
-    fill = NA,
-    colour = "grey30",
-    linewidth = 0.25
-  ) +
-  geom_sf(
     data = study_lga_habitat_crs,
     fill = NA,
     colour = "black",
@@ -1361,7 +1355,12 @@ connectivity_plot <- ggplot() +
   ) +
   labs(
     title = "Potential habitat connectivity priorities",
-    subtitle =
+    subtitle =connectivity_check <- readr::read_csv(
+  "data/processed/connectivity_results.csv",
+  show_col_types = FALSE
+)
+
+nrow(connectivity_check)
       "Major habitat patches are combined with fragmentation and development pressure",
     fill = NULL,
     caption =

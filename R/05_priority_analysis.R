@@ -413,8 +413,9 @@ priority_map_plot <- ggplot() +
       y = latitude,
       label = priority_id
     ),
-    size = 3.5,
+    size = 5,
     fontface = "bold",
+    colour = "black",
     inherit.aes = FALSE
   ) +
   # LGA labels
@@ -438,7 +439,7 @@ priority_map_plot <- ggplot() +
     label = "Priority precinct key",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 5,
     fontface = "bold"
   ) +
   
@@ -450,7 +451,7 @@ priority_map_plot <- ggplot() +
     label = priority_key_left,
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3.8,
     lineheight = 1.15
   ) +
   # Priority key right column
@@ -461,7 +462,7 @@ priority_map_plot <- ggplot() +
     label = priority_key_right,
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3.8,
     lineheight = 1.15
   ) +
   scale_fill_manual(
