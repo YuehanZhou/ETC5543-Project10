@@ -4,8 +4,11 @@
 .Ruserdata
 .DS_Store
 
-data/VIC_LANDCOVER_TS/
-data/habitat_value/
-data/Planning_Overlay/
+data/VIC_LANDCOVER_TS/*
+!data/VIC_LANDCOVER_TS/*.tif
 
-presentation_files/presentation.html
+data/habitat_value/*.pdf
+data/habitat_value/*.lyrx
+
+data/Planning_Overlay/
+data/FLORAFAUNA1/
