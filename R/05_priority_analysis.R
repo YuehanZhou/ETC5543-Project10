@@ -362,29 +362,33 @@ priority_key_simple <- priority_labels |>
 
 # 26. Create two-column precinct key
 priority_key_left <- priority_key_simple |>
-  filter(priority_id <= 8) |>
+  arrange(priority_id) |>
+  filter(priority_id <= 7) |>
   mutate(
-    key_label = paste0(
-      priority_id,
-      "  ",
-      str_wrap(psp_name, width = 23)
-    )
+    short_name = case_when(
+      psp_name == "Botanic Ridge (Stage 4)" ~ "Botanic Ridge (Stg 4)",
+      psp_name == "Casey Central Town Centre" ~ "Casey Central TC",
+      str_detect(psp_name, "^Greenvale North") ~ "Greenvale North (R1)",
+      TRUE ~ psp_name
+    ),
+    key_label = paste(priority_id, short_name)
   ) |>
   pull(key_label) |>
   paste(collapse = "\n")
 
 priority_key_right <- priority_key_simple |>
-  filter(priority_id >= 9) |>
+  arrange(priority_id) |>
+  filter(priority_id >= 8) |>
   mutate(
-    key_label = paste0(
-      priority_id,
-      "  ",
-      str_wrap(psp_name, width = 23)
-    )
+    short_name = case_when(
+      psp_name == "Taylors Hill West" ~ "Taylors Hill W",
+      psp_name == "Werribee Junction" ~ "Werribee Jct",
+      TRUE ~ psp_name
+    ),
+    key_label = paste(priority_id, short_name)
   ) |>
   pull(key_label) |>
   paste(collapse = "\n")
-
 
 # 27. Use full five-LGA extent
 map_bbox <- st_bbox(study_lga_ll)
@@ -434,8 +438,8 @@ priority_map_plot <- ggplot() +
   # Priority key title
   annotate(
     "text",
-    x = as.numeric(map_bbox["xmax"]) + 0.05,
-    y = as.numeric(map_bbox["ymax"]) - 0.02,
+    x = 145.55,
+    y = -37.48,
     label = "Priority precinct key",
     hjust = 0,
     vjust = 1,
@@ -443,27 +447,28 @@ priority_map_plot <- ggplot() +
     fontface = "bold"
   ) +
   
-  # Priority key left column
+  # Left column: 1–7
   annotate(
     "text",
-    x = as.numeric(map_bbox["xmax"]) + 0.05,
-    y = as.numeric(map_bbox["ymax"]) - 0.06,
+    x = 145.55,
+    y = -37.55,
     label = priority_key_left,
     hjust = 0,
     vjust = 1,
-    size = 3.8,
-    lineheight = 1.15
+    size = 3.5,
+    lineheight = 1.45
   ) +
-  # Priority key right column
+  
+  # Right column: 8–14
   annotate(
     "text",
-    x = as.numeric(map_bbox["xmax"]) + 0.48,
-    y = as.numeric(map_bbox["ymax"]) - 0.06,
+    x = 146.18,
+    y = -37.55,
     label = priority_key_right,
     hjust = 0,
     vjust = 1,
-    size = 3.8,
-    lineheight = 1.15
+    size = 3.5,
+    lineheight = 1.45
   ) +
   scale_fill_manual(
     values = c(
@@ -480,14 +485,8 @@ priority_map_plot <- ggplot() +
     caption = "Screening identifies precincts for further ecological and corridor assessment; it does not directly model fauna movement or connectivity."
   ) +
   coord_sf(
-    xlim = c(
-      as.numeric(map_bbox["xmin"]),
-      as.numeric(map_bbox["xmax"]) + 0.82
-    ),
-    ylim = c(
-      as.numeric(map_bbox["ymin"]),
-      as.numeric(map_bbox["ymax"])
-    ),
+    xlim = c(144.4, 146.75),
+    ylim = c(-38.3, -37.35),
     datum = st_crs(4326),
     expand = FALSE
   ) +

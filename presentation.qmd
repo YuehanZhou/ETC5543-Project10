@@ -16,20 +16,66 @@ execute:
   message: false
 ---
 
+
 ## The problem and research question
 
 Melbourne's fringe growth areas are experiencing rapid urban expansion, increasing pressure on native habitat and ecological connectivity.
 
-### Original project question
+### Research question
 
-**How is rapid housing expansion in fringe growth corridors encroaching on native fauna movement, and where are priority ecological corridors in need of planning overlay protection?**
+**Where do urban development pressure, biodiversity value and conservation gaps overlap, and which precincts warrant further habitat connectivity and planning protection assessment?**
 
-### Our analytical scope
+### Our analytical approach
 
-**Precinct-level ecological screening of where development pressure, ecological value and conservation gaps overlap**
+We combine:
 
-*Fauna movement and habitat connectivity are not directly modelled.*
+- Urban expansion and development pressure
+- High-value habitat and focal-species evidence
+- Habitat fragmentation and structural connectivity
+- BCS Conservation Areas and Environmental Significance Overlays (ESO)
 
+*We identify potential ecological priorities, not confirmed animal movement corridors.*
+
+## Key planning and ecological terms
+
+::: {.columns}
+
+::: {.column width="48%"}
+
+### Planning framework
+
+**LGA — Local Government Area**  
+A local council area defining the study region.
+
+**PSP — Precinct Structure Plan**  
+A detailed land-use and infrastructure plan for a growth-area precinct.
+
+**MSA — Melbourne Strategic Assessment**  
+A strategic framework integrating urban development and biodiversity conservation.
+
+:::
+
+::: {.column width="48%"}
+
+### Conservation framework
+
+**BCS — Biodiversity Conservation Strategy**  
+A strategy identifying biodiversity conservation areas in Melbourne's growth corridors.
+
+**ESO — Environmental Significance Overlay**  
+A statutory planning overlay used to manage development in environmentally significant areas.
+
+**Ecological connectivity**  
+The degree to which habitat areas are connected and may support species movement.
+
+**Habitat fragmentation**  
+The division of continuous habitat into smaller, more isolated patches.
+
+:::
+
+:::
+
+*BCS and ESO represent different planning mechanisms. Neither directly measures fauna movement.*
 
 ## Study area and planning relevance
 
@@ -49,18 +95,13 @@ Melbourne's fringe growth areas are experiencing rapid urban expansion, increasi
 
 Casey · Hume · Melton · Whittlesea · Wyndham
 
-**105 PSP/MSA precincts**
+**101 analytical PSP/MSA precincts**
+
+Precincts were retained when at least 50% of their area overlapped the five study LGAs.
 
 ### Why it matters
 
-The screening can support:
-
-- state and local planners
-- growth-area planners
-- councils
-- biodiversity teams
-
-by highlighting precincts requiring closer ecological assessment.
+Our screening helps planners and councils identify precincts requiring closer ecological assessment and planning attention.
 
 :::
 
@@ -84,31 +125,32 @@ by highlighting precincts requiring closer ecological assessment.
   Golden Sun Moth  
   Growling Grass Frog
 
-- **BCS Conservation Areas**  
-  Conservation coverage
-
+- **BCS and ESO spatial layers**  
+  Conservation and planning-overlay coverage
 :::
 
 ::: {.column width="56%"}
 
-### Screening framework
 
-**Development pressure**  
-Urban growth and urban-share change
+### Analytical framework
 
-**Ecological value**  
-High-value habitat and focal-species evidence
+**Stage 1: Baseline ecological screening**
 
-**Conservation gap**  
-BCS conservation coverage
+Development pressure + ecological value + BCS coverage
 
-### ↓
+↓
 
-### **Ecological priority screening**
+**Stage 2: Connectivity and planning assessment**
 
-### ↓
+Habitat fragmentation + structural connectivity + BCS/ESO coverage
 
-**Priority precincts for further ecological and corridor assessment**
+↓
+
+**Priority precincts for further ecological assessment**
+
+### Our contribution
+
+An integrated precinct-level screening framework combining urban expansion, biodiversity indicators and planning protection data.
 
 :::
 
@@ -125,14 +167,14 @@ BCS conservation coverage
 Measured using:
 
 **Urban growth (ha)**  
-Absolute increase in urban land
+Absolute increase in urban land over the study period
 
 **Urban-share change**  
 Change in the proportion of each precinct classified as urban
 
 ### Result
 
-**63 / 105 precincts**
+**63 / 101 precincts**
 
 were classified as having **high development pressure**.
 
@@ -146,7 +188,7 @@ were classified as having **high development pressure**.
 
 :::
 
-**Median thresholds:** 6.12 ha growth · 1.58 percentage-point share change
+**Median thresholds:** 6.50 ha growth · 1.62 percentage-point share change
 
 ## Habitat, focal species and conservation analysis
 
@@ -342,15 +384,15 @@ of the precinct covered by BCS Conservation Areas
 
 ::: {.column width="26%"}
 
-### **15**
+### **14**
 
 ecological priority precincts were identified across the five study LGAs.
 
 These precincts combine:
 
-- relatively high development pressure
-- ecological value
-- no BCS coverage
+- High development pressure
+- High ecological value
+- No mapped BCS coverage
 
 They are **screening priorities**, not confirmed ecological corridors.
 
@@ -358,53 +400,11 @@ They are **screening priorities**, not confirmed ecological corridors.
 
 ::: {.column width="72%"}
 
-![](figures/final_priority_map.png){width=100%}
+![](figures/final_priority_map_ppt.png){width=100%}
 
 :::
 
 :::
-
-## From priority screening to interactive exploration
-
-::: {.columns}
-
-::: {.column width="47%"}
-
-### Fixed ecological screening
-
-Used to identify the **15 priority precincts**.
-
-A precinct is flagged when it has:
-
-- high development pressure
-- high ecological value
-- no BCS conservation coverage
-
-This gives a clear **YES / NO screening result**.
-
-:::
-
-::: {.column width="47%"}
-
-### Interactive Priority Explorer
-
-The Shiny tool goes one step further by **ranking all 105 precincts**.
-
-It combines:
-
-- **Development pressure**
-- **Habitat importance**
-- **Conservation gap**
-
-Users can change the weights to explore different planning scenarios.
-
-**Species records are used as a filter and contextual evidence, they do not change the score.**
-
-:::
-
-:::
-
-**Screening identifies where concern overlaps. The Explorer helps compare how strongly precincts should be prioritised under different planning objectives.**
 
 ## Interactive Priority Explorer
 
@@ -449,30 +449,93 @@ Open Interactive Priority Explorer →
 
 </div>
 
-*Priority scores are relative rankings among the 105 precincts, not ecological-risk probabilities.*
+*Priority scores are relative rankings among the 101 analytical precincts, not ecological-risk probabilities.*
+
+
+## Habitat fragmentation and connectivity
+
+::: {.columns}
+
+::: {.column width="38%"}
+
+### Structural connectivity screening
+
+We assessed:
+
+- High-value habitat patches
+- Habitat fragmentation
+- Patch separation
+- Development pressure
+
+These structural indicators were used to screen precincts for potential habitat connectivity concerns.
+
+### **10 of 101 precincts**
+
+were identified as potential **connectivity priorities**.
+
+*These are screening priorities, not confirmed fauna movement corridors.*
+
+:::
+
+::: {.column width="60%"}
+
+![](figures/connectivity_priority_map.png){width=100%}
+
+:::
+
+:::
+
+## Planning overlays and protection gaps
+
+::: {.columns}
+
+::: {.column width="38%"}
+
+### Protection gap assessment
+
+We compared potential connectivity priorities with:
+
+- BCS Conservation Areas
+- Environmental Significance Overlays (ESO)
+
+
+### **3 of 10**
+
+connectivity-priority precincts have **no mapped BCS or ESO coverage**.
+
+**Planning implication:** These precincts may warrant closer review of habitat connectivity and existing planning protections before further development.
+
+*No mapped BCS/ESO coverage does not imply the absence of all environmental protection.*
+
+:::
+
+::: {.column width="60%"}
+
+![](figures/planning_protection_gap_map.png){width=100%}
+
+:::
+
+:::
 
 ## Key findings and planning implications
 
-### Three messages emerge from the analysis
+### Three key findings
 
-**1. Urban expansion pressure is spatially uneven**  
-Some fringe precincts are experiencing substantially stronger development pressure than others.
+**1. Urban expansion is spatially uneven**
 
-**2. Ecological value and conservation coverage do not always align**
+63 of 101 precincts were classified as having high development pressure.
 
-A large share of high-value habitat lies outside BCS Conservation Areas, while focal-species records are concentrated in a relatively small number of precincts.
+**2. Different screening methods identify different priorities**
 
-**3. Priority emerges from overlap**
+14 precincts were identified through baseline ecological screening, while 10 were flagged for potential connectivity concerns.
 
-The strongest concern occurs where:
+**3. Potential planning protection gaps remain**
 
-**development pressure + ecological value + no BCS coverage**
-
-overlap in the same precinct.
+3 connectivity-priority precincts have no mapped BCS or ESO coverage.
 
 ### Planning implication
 
-The 15 screened precincts provide a focused starting point for more detailed ecological and corridor assessment.
+These results provide a screening basis for targeted ecological assessment and further consideration of habitat connectivity and planning protection.
 
 
 ## Limitations and future work
@@ -483,25 +546,26 @@ The 15 screened precincts provide a focused starting point for more detailed eco
 
 ### Current limitations
 
-- Fauna movement is **not directly modelled**
-- Habitat connectivity is **not directly modelled**
-- Species records indicate **occurrence**, not movement pathways or abundance
-- BCS coverage is **not equivalent to statutory planning-overlay protection**
+- Habitat connectivity is assessed using **structural spatial indicators**, not observed animal movement.
+- Species records indicate occurrence, not abundance or movement pathways.
+- Habitat Value ≥ 70 is a screening threshold.
+- BCS and ESO coverage do not capture every form of environmental protection.
 
 :::
 
 ::: {.column width="48%"}
 
-### Next steps
+### Future work
 
-- habitat-connectivity analysis
-- road and infrastructure barriers
-- statutory planning overlays
-- potential ecological corridor identification
+- Species-specific movement and corridor modelling
+- Road and infrastructure barrier analysis
+- Field validation of priority precincts
+- Assessment of additional planning controls and ESO effectiveness
+
+:::
 
 :::
 
-:::
 
 ## Thank you
 
