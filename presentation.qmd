@@ -202,7 +202,7 @@ precincts were classified as having **high development pressure**.
 
 <br>
 
-**Median thresholds:** 6.50 ha urban growth · 1.62 percentage-point urban-share change
+*High development pressure was identified using study-area median thresholds.*
 
 ## Measuring ecological value
 
