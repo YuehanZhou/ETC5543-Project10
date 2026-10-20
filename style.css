@@ -31,6 +31,23 @@
   color: #1f3b5c;
 }
 
+/* =========================================================
+   THANK YOU SLIDE
+   ========================================================= */
+
+.reveal .slides section.thank-you-slide {
+  height: 100%;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.reveal .slides section.thank-you-slide h2 {
+  font-size: 2.8em;
+  margin: 0;
+}
+
 .reveal h1 {
   font-size: 2em;
 }

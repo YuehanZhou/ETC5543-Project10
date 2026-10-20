@@ -455,8 +455,8 @@ priority_map_plot <- ggplot() +
     label = priority_key_left,
     hjust = 0,
     vjust = 1,
-    size = 3.5,
-    lineheight = 1.45
+    size = 4.3,
+    lineheight = 1.35
   ) +
   
   # Right column: 8–14
@@ -467,8 +467,8 @@ priority_map_plot <- ggplot() +
     label = priority_key_right,
     hjust = 0,
     vjust = 1,
-    size = 3.5,
-    lineheight = 1.45
+    size = 4.3,
+    lineheight = 1.35
   ) +
   scale_fill_manual(
     values = c(
@@ -505,6 +505,9 @@ priority_map_plot <- ggplot() +
       colour = "grey40"
     ),
     legend.position = "bottom",
+    legend.text = element_text(
+      size = 11
+    ),
     plot.title = element_text(
       size = 16,
       face = "bold"
@@ -520,3 +523,11 @@ priority_map_plot <- ggplot() +
   )
 
 print(priority_map_plot)
+
+ggsave(
+  "figures/final_priority_map_ppt.png",
+  plot = priority_map_plot,
+  width = 14,
+  height = 8,
+  dpi = 300
+)

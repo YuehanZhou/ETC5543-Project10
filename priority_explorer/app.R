@@ -16,11 +16,6 @@ integrated_data <- read_csv(
   show_col_types = FALSE
 )
 
-integrated_data <- read_csv(
-  "../data/processed/final_integrated_results.csv",
-  show_col_types = FALSE
-)
-
 stopifnot(
   nrow(explorer_data) == 101,
   nrow(integrated_data) == 101,
