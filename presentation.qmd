@@ -502,13 +502,15 @@ Combines **connectivity concern, focal-species evidence and no mapped BCS/ESO co
 - Test how priorities change under **different planning objectives**
 - Combine **connectivity, species and BCS/ESO evidence** to identify precincts for **closer ecological assessment**
 
+:::
+
+:::
+
+[Open Interactive Priority Explorer →](http://127.0.0.1:4593){.tool-button target="_blank"}
+
 <br>
 
 *The app supports decision-making, it does not make the planning decision.*
-
-:::
-
-:::
 
 <br>
 

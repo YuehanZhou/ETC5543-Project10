@@ -277,14 +277,11 @@
 }
 
 
-/* Interactive tool button */
+/* =========================================================
+   INTERACTIVE TOOL BUTTON
+   ========================================================= */
 
-.tool-button {
-  margin-top: 20px;
-  margin-bottom: 15px;
-}
-
-.tool-button a {
+.reveal a.tool-button {
   display: inline-block;
   background-color: #1f3b5c;
   color: white !important;
@@ -293,8 +290,10 @@
   font-size: 0.75em;
   font-weight: 700;
   text-decoration: none !important;
+  margin-top: 12px;
+  margin-bottom: 12px;
 }
 
-.tool-button a:hover {
+.reveal a.tool-button:hover {
   opacity: 0.85;
 }
