@@ -523,11 +523,3 @@ priority_map_plot <- ggplot() +
   )
 
 print(priority_map_plot)
-
-ggsave(
-  "figures/final_priority_map_ppt.png",
-  plot = priority_map_plot,
-  width = 14,
-  height = 8,
-  dpi = 300
-)
