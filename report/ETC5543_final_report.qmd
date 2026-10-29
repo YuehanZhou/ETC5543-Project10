@@ -1,17 +1,35 @@
 ---
 title: "Urban Sprawl and Biodiversity in Melbourne's Growth Corridors"
 author: "Siddhi Jadhav & Yuehan Zhou"
+
 format:
   html:
     toc: true
     number-sections: true
+    embed-resources: true
 ---
 
 # Abstract
 
-<!-- Joint: write last -->
+Rapid urban expansion across Melbourne’s fringe growth areas can increase pressure on native habitat through land conversion, fragmentation and reduced habitat connectivity. This project investigates where urban development pressure, biodiversity value and gaps in mapped conservation coverage overlap across 101 PSP/MSA precincts in Casey, Hume, Melton, Whittlesea and Wyndham. The analysis integrates land-cover change, Habitat Value, recent Golden Sun Moth and Growling Grass Frog occurrence records, Biodiversity Conservation Strategy (BCS) Conservation Areas and Environmental Significance Overlays (ESO).
+
+Development pressure and ecological value were first combined in a transparent rule-based screening, while a separate structural connectivity analysis assessed habitat fragmentation, major habitat patches, patch separation and development pressure. Across the study area, 63 of 101 precincts were classified as having high development pressure. Approximately 17,172 ha of high-value habitat was identified, of which 82.2% lay outside BCS Conservation Areas. The baseline screening identified 14 ecological priority precincts, while the structural connectivity analysis identified 10 potential connectivity priorities. Of these, three had no mapped BCS or ESO coverage, two contained focal-species records, and one combined connectivity concern, focal-species evidence and no mapped BCS/ESO coverage.
+
+An Interactive Priority Explorer was also developed to support comparison of precincts under different planning priorities. The results provide a screening basis for targeted ecological assessment and planning review rather than confirmed wildlife-corridor identification.
 
 # Introduction
+
+Melbourne’s fringe growth areas are experiencing substantial urban expansion as new residential and employment areas are developed to accommodate population growth. While this development supports housing and infrastructure needs, it can also place pressure on native habitat through land conversion, habitat fragmentation and increasing separation between ecologically important areas.
+
+This project examines these pressures across five Local Government Areas (LGAs) on Melbourne’s fringe: Casey, Hume, Melton, Whittlesea and Wyndham. The analysis is conducted at the Precinct Structure Plan (PSP) and Melbourne Strategic Assessment (MSA) precinct level, resulting in 101 analytical precincts across the study area. Using precincts as the unit of analysis allows development and ecological conditions to be compared at a scale that is relevant to growth-area planning.
+
+Rather than examining urban expansion and biodiversity separately, the project integrates multiple sources of evidence, including land-cover change, Habitat Value, recent records of the Golden Sun Moth and Growling Grass Frog, Biodiversity Conservation Strategy (BCS) Conservation Areas, Environmental Significance Overlays (ESO), and structural habitat-connectivity indicators. This provides a broader view of where development pressure, ecological value and gaps in mapped conservation or planning coverage may overlap.
+
+The study is guided by the following research question:
+
+**Where do urban development pressure, biodiversity value and conservation gaps overlap, and which precincts warrant further habitat connectivity and planning protection assessment?**
+
+The purpose of the analysis is not to identify confirmed wildlife corridors or directly model animal movement. Instead, it provides an exploratory precinct-level screening framework to identify areas that may warrant closer ecological assessment and further planning consideration.
 
 ## Background and motivation
 
@@ -39,19 +57,37 @@ format:
 
 ## Habitat Value data
 
-<!-- Siddhi -->
+Habitat Value data were used to represent habitat importance across the study area. The analysis used a 75 m resolution Habitat Value raster (`habitat_value_75m_20241024_vg2020.tif`), with habitat information summarised for each of the 101 analytical PSP/MSA precincts.
+
+Two precinct-level habitat measures were derived from the raster: mean Habitat Value and the percentage of each precinct containing high-value habitat. For this project, raster cells with a Habitat Value of 70 or above were classified as high-value habitat. The proportion of these cells within each precinct was then calculated as `high_habitat_percent`.
+
+Habitat Value was included because it provides spatial evidence of ecological importance across the full study area, complementing the more location-specific focal-species occurrence records. The Habitat Value ≥ 70 threshold was used as an exploratory screening threshold to focus the analysis on relatively higher-value habitat while retaining enough spatial coverage for precinct-level comparison and connectivity analysis. It should therefore be interpreted as an analytical threshold used consistently across the study, rather than an official ecological or regulatory cut-off.
 
 ## Focal-species records
 
-<!-- Siddhi -->
+Focal-species occurrence data were used to provide species-specific biodiversity evidence alongside the broader Habitat Value measure. The final analysis focused on two species: the Golden Sun Moth and the Growling Grass Frog.
+
+Species occurrence records were obtained from the Victorian Biodiversity Atlas (VBA). To focus the analysis on relatively recent occurrence evidence, only records from 2015 onwards were retained. This reduced the influence of older observations that may be less representative of current development and habitat conditions, while still preserving enough records for precinct-level comparison. The 2015 cut-off was used as a practical analytical choice rather than as an ecological threshold. The records were spatially matched to the 101 analytical PSP/MSA precincts, and the number of records for each focal species was calculated for every precinct.
+
+The resulting variables, `golden_sun_moth_records` and `growling_grass_frog_records`, were used to determine whether focal-species evidence was present within each precinct. These records provide evidence of observed occurrence rather than estimates of population abundance or animal movement. Similarly, the absence of a record within a precinct should not be interpreted as evidence that the species is absent.
 
 ## Conservation and planning layers
 
-<!-- Siddhi -->
+Two mapped planning and conservation layers were incorporated into the analysis: Biodiversity Conservation Strategy (BCS) Conservation Areas and Environmental Significance Overlays (ESO).
+
+BCS Conservation Areas were used to represent mapped conservation coverage within each analytical precinct. The percentage of each precinct covered by BCS was calculated as `bcs_percent`, allowing the analysis to distinguish between precincts with and without mapped BCS coverage.
+
+Environmental Significance Overlays were used as an additional planning layer to capture areas subject to mapped environmental planning controls. ESO polygons within the study area were identified and summarised at precinct level, producing measures of ESO area, percentage coverage and whether an ESO was present.
+
+Using both BCS and ESO allowed the project to compare ecological and connectivity priorities with two different forms of mapped conservation and planning coverage. However, the absence of BCS or ESO coverage should not be interpreted as the absence of all environmental protection, as these layers do not capture every possible planning or conservation mechanism.
 
 ## Spatial boundaries and analytical units
 
-<!-- Joint -->
+Spatial boundaries were used to define both the broader study area and the precinct-level analytical units. Local Government Area (LGA) boundaries were used to identify the five study LGAs: Casey, Hume, Melton, Whittlesea and Wyndham. PSP boundary polygons were then matched with the available MSA precinct attributes to create the precinct-level spatial dataset used throughout the analysis.
+
+All spatial layers were transformed to a common projected coordinate reference system before area-based calculations were carried out. Precincts were intersected with the combined five-LGA study area, and the proportion of each precinct falling within the study area was calculated.
+
+To ensure that only precincts substantially located within the selected growth areas were retained, a precinct was included when at least 50% of its total area overlapped the five study LGAs. Applying this rule produced the final set of 101 analytical PSP/MSA precincts used consistently across the project.
 
 # Methodology
 
@@ -61,7 +97,16 @@ format:
 
 ## Ecological-value assessment
 
-<!-- Siddhi -->
+Ecological value was assessed by combining precinct-level habitat information with focal-species occurrence evidence. This approach was used because the two indicators capture different aspects of biodiversity: Habitat Value provides continuous spatial information across all precincts, while species records provide direct evidence that at least one of the selected focal species has been observed within a precinct.
+
+For each precinct, `high_habitat_percent` represented the percentage of land classified as high-value habitat using the Habitat Value ≥ 70 screening threshold. The study-area median of `high_habitat_percent` was then used to distinguish precincts with relatively higher habitat coverage.
+
+A precinct was classified as having high ecological value when either:
+
+- its percentage of high-value habitat was above the study-area median; or
+- at least one Golden Sun Moth or Growling Grass Frog record was present.
+
+Using an OR condition allowed species-occurrence evidence to contribute to ecological value even where the proportion of high-value habitat was not above the median. The resulting classification was used as one component of the baseline ecological screening.
 
 ## Baseline ecological screening
 
@@ -69,15 +114,55 @@ format:
 
 ## Structural habitat-connectivity screening
 
-<!-- Siddhi -->
+A structural habitat-connectivity screening was conducted to identify precincts where important habitat may be fragmented or spatially separated while also experiencing development pressure. The analysis was designed as an exploratory screening of habitat structure rather than a model of actual fauna movement.
+
+High-value habitat cells, defined using the Habitat Value ≥ 70 threshold, were first grouped into continuous habitat patches using eight-direction cell connectivity. For each precinct, fragmentation indicators were calculated, including the number of habitat patches, patch density, total high-value habitat area, the size of the largest patch and the proportion of habitat contained within the largest patch.
+
+To reduce sensitivity to very small habitat patches, fragmentation was assessed under three minimum patch-size scenarios: all patches, patches of at least 1 ha and patches of at least 5 ha. Within each scenario, a precinct was classified as fragmented when its patch density was above the scenario median and the proportion of habitat contained in its largest patch was below the scenario median. A precinct was considered robustly fragmented when it was classified as fragmented in at least two eligible scenarios.
+
+The 5 ha threshold was used as the baseline definition of a major habitat patch to reduce the influence of very small habitat fragments on the connectivity indicators. Because this threshold is an analytical choice rather than an established ecological cut-off, additional sensitivity testing at 1 ha and 10 ha was used to assess whether the identified connectivity priorities remained consistent under more inclusive and more restrictive patch definitions. These included the number of major patches, the total area of major habitat and the mean distance to the nearest major habitat patch. A precinct was classified as having connectivity importance when it contained major habitat patches, had a major-patch count at or above the study-area median, and also had either major-habitat area at or above the median or mean nearest-patch distance at or below the median.
+
+Finally, a precinct was classified as a potential connectivity priority when three conditions occurred together: connectivity importance, robust habitat fragmentation and high development pressure. Additional sensitivity testing compared connectivity results using minimum major-patch thresholds of 1 ha, 5 ha and 10 ha.
+
+These connectivity priorities represent locations that may warrant further ecological corridor assessment. They should not be interpreted as confirmed wildlife corridors because the analysis measures the spatial structure and separation of habitat rather than observed animal movement.
 
 ## Planning protection-gap assessment
 
-<!-- Siddhi -->
+A planning protection-gap assessment was conducted to examine whether precincts identified through the structural connectivity screening were also covered by mapped conservation or environmental planning controls. Two layers were considered: Biodiversity Conservation Strategy (BCS) Conservation Areas and Environmental Significance Overlays (ESO).
+
+ESO polygons were first restricted to the five-LGA study area and intersected with each analytical precinct. For every precinct, the area and percentage covered by ESO were calculated, along with an indicator showing whether any ESO coverage was present. BCS coverage was incorporated using the previously calculated `bcs_percent` measure.
+
+The connectivity results were then combined with the BCS and ESO coverage measures. A precinct was classified as having a potential planning protection gap when it met all three conditions:
+
+- it was identified as a connectivity priority;
+- it had 0% mapped BCS coverage; and
+- it had no mapped ESO coverage.
+
+This assessment was used to identify connectivity-priority precincts where the two mapped conservation and planning layers considered in this study did not overlap the precinct. The term “planning protection gap” therefore refers specifically to the absence of mapped BCS and ESO coverage and should not be interpreted as meaning that no other environmental protections or planning controls apply.
 
 ## Interactive Priority Explorer
 
-<!-- Siddhi -->
+An interactive Shiny application was developed to translate the analytical results into a precinct-level decision-support tool. The Priority Explorer allows users to compare the 101 analytical precincts and examine how their relative ranking changes when different planning priorities are emphasised.
+
+Three components were used to calculate the priority score: development pressure, habitat importance and conservation gap. Because these variables are measured on different scales, each component was converted to a percentile rank across the study precincts. Development pressure was calculated as the average percentile rank of urban growth and urban-share change. Habitat importance was represented by the percentile rank of `high_habitat_percent`, while conservation gap was represented by the percentile rank of high-value habitat area outside BCS Conservation Areas.
+
+The three standardised components were combined using a weighted score:
+
+\[
+\text{Priority Score}
+=
+100 \times
+\frac{(D \times w_D) + (H \times w_H) + (G \times w_G)}
+{w_D + w_H + w_G}
+\]
+
+where \(D\) represents development pressure, \(H\) represents habitat importance, \(G\) represents conservation gap, and the corresponding weights determine the relative importance assigned to each component.
+
+The default weighting assigns 40% to development pressure, 30% to habitat importance and 30% to conservation gap. The application also provides predefined balanced, development-focused and conservation-focused scenarios, while allowing users to adjust the weights manually. Changing the weights changes only the relative ranking of precincts and does not alter the underlying data.
+
+Focal-species records, connectivity-priority status and BCS/ESO planning coverage are provided as additional filters and contextual evidence rather than components of the priority-score calculation. This separation allows users to explore whether highly ranked precincts also contain other forms of ecological or planning evidence without automatically increasing their score.
+
+The resulting Priority Score is a relative screening measure across the 101 analytical precincts. It should not be interpreted as a probability of ecological risk, a confirmed habitat-corridor designation or a planning decision.
 
 # Results
 
@@ -87,37 +172,102 @@ format:
 
 ## Habitat and focal-species findings
 
-<!-- Siddhi -->
+Across the 101 analytical precincts, approximately 17,172 ha of high-value habitat was identified using the Habitat Value ≥ 70 exploratory threshold. This indicates that ecologically valuable habitat remains distributed across Melbourne’s fringe growth areas despite substantial development pressure.
+
+Recent focal-species records showed 2,899 Golden Sun Moth records and 344 Growling Grass Frog records within the study precincts. At least one of the two focal species was recorded in 13 of the 101 analytical precincts.
+
+The habitat and species indicators provide complementary forms of biodiversity evidence. Habitat Value provides information across the broader study area, while focal-species records provide more specific evidence of observed occurrence within a smaller number of precincts. Species-record counts should not be interpreted as measures of population abundance, and the absence of a record does not demonstrate that a species is absent from a precinct. The spatial distribution of recent Golden Sun Moth and Growling Grass Frog records across the analytical precincts is shown in @fig-focal-species.
+
+![Recent focal-species records across the analytical precincts.](../figures/focal_species_map.png){#fig-focal-species}
 
 ## Conservation-gap findings
 
-<!-- Siddhi -->
+Across the 101 analytical precincts, approximately 17,172 ha of high-value habitat was identified. Of this, about 14,113 ha was located outside Biodiversity Conservation Strategy (BCS) Conservation Areas, while approximately 3,059 ha occurred within mapped BCS areas. This means that 82.2% of the high-value habitat identified in the study area lies outside BCS Conservation Areas.
 
+The conservation gap was not evenly distributed across the study area. Ravenhall (Quarry Site), Toolern and Mt Atkinson contained some of the largest areas of high-value habitat outside BCS coverage, indicating that substantial areas of relatively high-value habitat occur beyond this mapped conservation layer. The distribution of high-value habitat inside and outside mapped BCS Conservation Areas is summarised in @fig-conservation-gap.
+
+These results should not be interpreted as showing that habitat outside BCS is completely unprotected. BCS represents one mapped conservation framework, and other planning or environmental controls may also apply.
+
+![High-value habitat outside BCS Conservation Areas.](../figures/conservation_gap_bar.png){#fig-conservation-gap}
 ## Baseline ecological priorities
 
 <!-- Zora -->
 
 ## Habitat connectivity and planning protection
 
-<!-- Siddhi -->
+The structural connectivity screening identified 10 of the 101 analytical precincts as potential connectivity priorities. These precincts combined indicators of habitat connectivity importance, robust fragmentation and high development pressure.
 
+Sensitivity testing showed that the number of connectivity-priority precincts varied moderately across the alternative major-patch thresholds, with 15 priorities identified at 1 ha, 10 at 5 ha and 13 at 10 ha. Eleven precincts were classified as stable connectivity priorities because they were identified under at least two of the three threshold scenarios, indicating that most priority locations were not dependent on a single major-patch definition.
+
+The connectivity priorities were then compared with mapped Biodiversity Conservation Strategy (BCS) Conservation Areas and Environmental Significance Overlays (ESO). Of the 10 connectivity-priority precincts, three, Aurora, East Werribee Employment Precinct and Plumpton, had no mapped BCS or ESO coverage. The spatial distribution of these potential planning protection gaps is shown in @fig-protection-gap.
+
+Focal-species evidence provided an additional layer of ecological context. Two connectivity-priority precincts, Aurora and Sunbury South, contained recent records of at least one focal species. Aurora was the only precinct that combined all three forms of concern: connectivity priority status, focal-species evidence and no mapped BCS or ESO coverage.
+
+As shown in @fig-connectivity-priority, these results identify a smaller set of precincts that may warrant closer ecological and planning assessment. However, the connectivity priorities represent structural screening results rather than confirmed fauna movement corridors, and the absence of mapped BCS or ESO coverage does not imply that no other environmental protections apply.
+
+![Potential habitat connectivity priorities across the study area.](../figures/connectivity_priority_map.png){#fig-connectivity-priority}
+
+![Connectivity priorities with no mapped BCS or ESO coverage.](../figures/planning_protection_gap_map.png){#fig-protection-gap}
 ## Interactive Priority Explorer
 
-<!-- Siddhi -->
+The Interactive Priority Explorer was developed to translate the precinct-level analysis into an interactive decision-support tool. While the preceding results identify ecological, connectivity and planning concerns using fixed screening rules, the application allows users to explore how the relative importance of precincts changes under different planning priorities.
 
+The application displays the 101 analytical precincts on an interactive map, with each precinct coloured according to its current Priority Score. Users can search for or select an individual precinct to examine its underlying evidence in more detail. For each selected precinct, the application displays the overall Priority Score together with separate measures of development pressure, habitat importance and conservation gap. It also reports the underlying urban growth, percentage of high-value habitat, area of high-value habitat outside BCS, focal-species records, connectivity-priority status and mapped BCS and ESO coverage.
+
+Users can change the relative emphasis placed on development pressure, habitat importance and conservation gap using either predefined planning scenarios or manually adjustable weights. The map and ranked priority table update automatically when these weights are changed, allowing users to examine how different planning objectives influence the relative ranking of precincts. In the unfiltered view, the table displays the ten highest-ranked precincts under the selected weighting.
+
+The application also provides filters for Golden Sun Moth and Growling Grass Frog records and for integrated ecological evidence. Users can focus specifically on connectivity-priority precincts, connectivity priorities with no mapped BCS or ESO coverage, or locations where connectivity concerns coincide with focal-species evidence. These filters change which precincts are displayed for exploration but do not alter the underlying Priority Score calculation.
+
+The Priority Explorer therefore complements the rule-based and connectivity screening results by allowing alternative planning perspectives to be investigated without modifying the original data. It is intended to support comparison and prioritisation for further assessment rather than determine whether a precinct is ecologically at risk or prescribe a planning decision. An example of the interface and the precinct-level information available to users is shown in @fig-priority-explorer.
+
+![Interactive Priority Explorer showing precinct-level ranking and supporting ecological evidence.](../figures/priority_explorer.png){#fig-priority-explorer}
 # Discussion
 
 ## Main findings
 
-<!-- Joint -->
+The results show that urban development pressure, biodiversity value and mapped conservation coverage are not evenly distributed across Melbourne’s fringe growth areas. Of the 101 analytical precincts, 63 were classified as experiencing high development pressure, indicating that development-related change is widespread across the study area. However, the ecological implications of this development differ substantially between precincts depending on the amount and spatial structure of habitat that remains.
+
+The biodiversity analysis identified approximately 17,172 ha of high-value habitat across the study area. Importantly, 82.2% of this habitat was located outside mapped BCS Conservation Areas. This does not mean that all habitat outside BCS is unprotected, but it demonstrates that a large proportion of the relatively high-value habitat identified through this study falls beyond this particular mapped conservation framework. This reinforces the importance of considering additional ecological and planning information rather than relying on a single conservation layer.
+
+The focal-species analysis provided a more specific form of ecological evidence. Golden Sun Moth and Growling Grass Frog records occurred within 13 of the 101 analytical precincts. Species records were therefore considerably more spatially restricted than the Habitat Value measure. This difference illustrates why the two indicators were used together: Habitat Value provides continuous evidence of potential ecological importance across the wider landscape, while species observations provide direct but geographically incomplete evidence of recorded occurrence.
+
+The baseline ecological screening identified 14 precincts where high development pressure, high ecological value and no mapped BCS coverage occurred together. These precincts represent areas where multiple broad indicators of potential ecological concern overlap. However, this screening does not directly consider the spatial arrangement or separation of habitat patches and therefore does not identify habitat connectivity itself.
+
+The separate structural connectivity analysis identified 10 precincts as potential connectivity priorities. These results should not be interpreted as a reduction from the 14 baseline ecological priorities because the two analyses address different questions. The baseline screening identifies broad overlap between development pressure, ecological value and BCS coverage, whereas the connectivity screening focuses specifically on habitat structure, fragmentation, patch separation and development pressure. As a result, a precinct may be important under one screening approach without necessarily being identified by the other.
+
+Further integration with planning and species evidence narrowed the interpretation of the connectivity results. Three of the 10 connectivity-priority precincts had no mapped BCS or ESO coverage, while two contained recent focal-species records. One precinct combined a potential connectivity concern, focal-species evidence and no mapped BCS or ESO coverage. This combination of independent evidence provides a stronger basis for identifying locations that may warrant more detailed ecological investigation and planning review.
+
+Overall, the findings demonstrate the value of combining multiple forms of evidence rather than relying on a single indicator of biodiversity or development pressure. Development change, habitat value, species occurrence, habitat configuration and planning coverage each provide a different perspective. Considering them together produces a more nuanced screening framework for identifying where further ecological assessment may be most useful.
 
 ## Planning implications
 
-<!-- Joint -->
+The analysis has several implications for growth-area planning across Melbourne’s fringe. First, the results suggest that development pressure should not be considered independently from habitat condition and spatial structure. A precinct experiencing rapid urban expansion may not necessarily represent the greatest ecological concern if habitat value is low, while another precinct with similar development pressure may warrant closer attention because it also contains substantial high-value habitat, fragmented habitat patches or limited mapped conservation coverage.
+
+Second, the large proportion of high-value habitat located outside BCS Conservation Areas highlights the importance of looking beyond a single conservation framework when assessing ecological risk. BCS coverage remains an important planning layer, but the results show that ecologically valuable habitat can occur outside mapped BCS areas. Incorporating additional planning controls such as Environmental Significance Overlays, together with habitat and species evidence, provides a more complete basis for identifying locations that may require further review.
+
+The connectivity analysis also adds an important spatial perspective. Protecting individual habitat patches does not necessarily address the ecological consequences of fragmentation or separation between habitat areas. Precincts identified as potential connectivity priorities may therefore warrant closer consideration of how future development could affect the continuity, isolation or function of remaining habitat. This could include more detailed corridor assessment, investigation of road and infrastructure barriers, or consideration of whether habitat connections can be retained or strengthened through future planning.
+
+The combined evidence is particularly useful for prioritising where more detailed assessment may be most valuable. Connectivity-priority precincts with no mapped BCS or ESO coverage represent potential planning gaps within the layers examined in this study, while precincts that also contain focal-species evidence provide an additional reason for closer ecological investigation. These results do not prescribe a specific planning outcome, but they can help direct limited assessment resources towards locations where multiple indicators of concern overlap.
+
+The Interactive Priority Explorer further supports this decision-making process by allowing different planning objectives to be compared. A planner may, for example, place greater emphasis on development pressure in one scenario and greater emphasis on habitat importance and conservation gaps in another. This flexibility is useful because planning decisions often involve balancing competing priorities rather than applying a single fixed ecological ranking.
+
+Overall, the project provides a screening framework that can support earlier identification of precincts requiring closer ecological attention. Its main value lies in helping planners move from a broad regional view towards a more targeted set of locations for further investigation, while recognising that detailed ecological assessment and statutory planning processes would still be required before any final planning decision is made.
 
 ## Methodological considerations and robustness
 
-<!-- Joint -->
+Several methodological choices were made to keep the screening framework transparent and reproducible while recognising that the indicators are measured on different scales and represent different aspects of ecological concern.
+
+The baseline ecological screening used study-area median values to classify development pressure and habitat conditions. These thresholds provide a relative comparison across the 101 analytical precincts rather than representing official planning or ecological cut-offs. As a result, a precinct classified as “high” is high relative to the other precincts in this study area, not necessarily high according to an external regulatory standard.
+
+Similarly, Habitat Value ≥ 70 was used to identify relatively high-value habitat for the purposes of this project. This threshold enabled the continuous raster to be converted into a spatial layer that could be used to calculate habitat area, fragmentation and connectivity indicators. However, it should be interpreted as an exploratory analytical threshold rather than a definitive ecological classification.
+
+Additional robustness checks were incorporated into the habitat-fragmentation analysis. Fragmentation was assessed under three minimum patch-size scenarios: all habitat patches, patches of at least 1 ha and patches of at least 5 ha. A precinct was classified as robustly fragmented only when it was identified as fragmented in at least two eligible scenarios. This reduced the likelihood that the final fragmentation classification was driven entirely by very small habitat patches or by a single patch-size assumption.
+
+The connectivity analysis included a further sensitivity assessment using minimum major-patch thresholds of 1 ha, 5 ha and 10 ha. Connectivity importance and priority status were recalculated under each threshold, allowing the consistency of identified priorities to be examined across alternative definitions of a major habitat patch. A precinct was treated as a stable connectivity priority in the sensitivity assessment when it was classified as a priority in at least two of the three scenarios.
+
+The project also separates the baseline ecological screening from the structural connectivity screening. The 14 baseline ecological priorities and 10 connectivity priorities should therefore not be interpreted as sequential stages of the same classification process. The baseline screening identifies broad overlap between development pressure, ecological value and BCS coverage, whereas the connectivity screening evaluates habitat configuration, fragmentation, patch separation and development pressure.
+
+Finally, the Interactive Priority Explorer standardises its three scoring components using percentile ranks before applying user-selected weights. This prevents indicators measured in different units, such as hectares, percentages and percentage-point changes, from being combined directly. The resulting score is therefore best interpreted as a relative ranking among the 101 study precincts rather than an absolute measure of ecological risk.
 
 ## Limitations
 
@@ -134,6 +284,16 @@ format:
 # Individual Contributions
 
 ## Siddhi Jadhav
+
+My main contribution to the project focused on the biodiversity, habitat-connectivity and planning components of the analysis. I worked on the collection and preprocessing of species and habitat data, including exploring candidate threatened-fauna datasets and processing the final Golden Sun Moth and Growling Grass Frog records used in the study. I also processed the Habitat Value raster and derived precinct-level measures of habitat importance and high-value habitat coverage.
+
+I developed the biodiversity conservation-gap analysis by integrating high-value habitat with Biodiversity Conservation Strategy (BCS) Conservation Areas to identify habitat occurring inside and outside mapped BCS coverage. I then extended the analysis by incorporating Environmental Significance Overlays (ESO) to provide an additional planning perspective.
+
+A major part of my contribution was the structural habitat-connectivity analysis. I developed the fragmentation and connectivity workflow using habitat patches, patch density, largest-patch share, major habitat area and nearest-patch distance. I also carried out sensitivity testing using alternative patch-size thresholds so that the connectivity results were not based on a single spatial assumption. I subsequently integrated the connectivity results with focal-species evidence and BCS/ESO coverage to identify areas with overlapping ecological and planning concerns.
+
+I also developed the Interactive Priority Explorer in Shiny. The application combines development pressure, habitat importance and conservation-gap indicators into a flexible weighted ranking and allows users to explore focal-species, connectivity and planning-coverage evidence interactively.
+
+These contributions extended the project beyond a simple comparison of urban growth and biodiversity by adding habitat fragmentation, connectivity and planning-coverage perspectives. The Interactive Priority Explorer also helped translate the analytical outputs into a more practical format for comparing precincts and supporting further assessment.
 
 ## Yuehan Zhou
 
