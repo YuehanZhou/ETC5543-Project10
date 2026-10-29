@@ -33,27 +33,70 @@ The purpose of the analysis is not to identify confirmed wildlife corridors or d
 
 ## Background and motivation
 
-<!-- Zora -->
+Melbourne's continued urban growth has increased pressure on land at the metropolitan fringe, where new development can overlap with areas of ecological importance. Urban sprawl, characterised by the outward expansion of developed land, can alter natural habitats and contribute to their fragmentation. As habitats become smaller and more isolated, the spatial connections between them may also be affected.
+
+Habitat fragmentation is an important biodiversity concern because smaller and more isolated habitat patches can make it harder for species to maintain viable populations. Previous research has demonstrated that fragmentation can reduce biodiversity and affect ecological processes over time (Haddad et al., 2015). Maintaining connections between habitat patches is therefore an important consideration in conservation planning, particularly in areas experiencing continued development.
+
+In Melbourne's growth corridors, urban development and biodiversity conservation are addressed through planning frameworks such as the Melbourne Strategic Assessment (MSA) and the Biodiversity Conservation Strategy (BCS). These frameworks aim to accommodate urban growth while addressing impacts on threatened species and habitats. However, understanding where development pressure, ecological value and existing conservation coverage overlap remains important for identifying locations that may require closer assessment.
+
+This project examines these issues across Melbourne's growth corridors by combining historical urban land-cover change, habitat value, focal-species records and planning protection data. Rather than attempting to confirm actual wildlife movement corridors, the study aims to identify precincts where ecological and planning concerns overlap and where further investigation of habitat connectivity may be useful.
 
 ## Research question and objectives
 
-<!-- Zora -->
+This study investigates the relationship between urban development pressure, ecological value and conservation planning in Melbourne's growth corridors. It focuses on identifying locations where historical urban expansion overlaps with areas of biodiversity importance and where existing planning protections may require further consideration.
+
+The main research question is:
+
+Where do urban development pressure, biodiversity value and conservation gaps overlap in Melbourne's growth corridors, and which precincts warrant further assessment of habitat connectivity and planning protection?
+
+To address this question, the study has four objectives:
+
+1. Assess urban development pressure by examining historical changes in urban land cover across the study precincts.
+
+2. Evaluate ecological value using habitat-value data and focal-species occurrence records.
+
+3. Identify ecological priorities through separate assessments of baseline development–conservation overlap and structural habitat connectivity.
+
+4. Examine planning protection coverage using BCS Conservation Areas and Environmental Significance Overlays (ESOs), and develop an interactive tool to support the exploration of priority precincts.
+
+The analysis is conducted at the PSP/MSA precinct level across five growth-area LGAs. The resulting priorities are intended to support further ecological investigation and planning review, rather than confirm wildlife movement corridors or determine final protection boundaries.
+
 
 # Study Area and Planning Context
 
 ## Study area
 
-<!-- Zora -->
+The study focuses on five local government areas (LGAs) within Melbourne's urban growth corridors: Casey, Hume, Melton, Whittlesea and Wyndham. These areas were selected because they are located along Melbourne's metropolitan fringe, where urban expansion and biodiversity conservation are important planning considerations.
+
+The analysis uses Precinct Structure Plan (PSP) and Melbourne Strategic Assessment (MSA) precincts as its main spatial units. Compared with broader LGA-level summaries, precinct-level analysis provides a more localised basis for examining development pressure, ecological value and planning protection coverage.
+
+A total of 101 PSP/MSA precincts were retained for the analysis. The same analytical units were used throughout the development-pressure, ecological-value and connectivity assessments, allowing the different screening results to be compared consistently. The spatial distribution of the five study LGAs is shown in @fig-study-area.
+
+![Five local government areas included in the study.](../figures/study_lga_map.png){#fig-study-area}
 
 ## Planning and conservation context
 
-<!-- Zora -->
+Urban development in Melbourne's growth corridors is guided by several planning and conservation frameworks. The Urban Growth Boundary (UGB) defines the broad extent of metropolitan urban development and helps direct growth towards areas with appropriate infrastructure and services. It also aims to protect valuable land outside the boundary from urban development pressure (Victorian Planning Authority, n.d.).
+
+The Melbourne Strategic Assessment (MSA) provides a framework for considering the environmental impacts of urban development in Melbourne's growth areas. It was undertaken under the Commonwealth Environment Protection and Biodiversity Conservation Act 1999 and established conservation commitments associated with planned urban expansion. The Biodiversity Conservation Strategy (BCS) for Melbourne's Growth Corridors forms part of this approach by identifying conservation priorities and measures intended to protect biodiversity while allowing planned development to proceed (Victorian Government, 2013).
+
+At the local planning level, the Environmental Significance Overlay (ESO) is a statutory planning control used to identify land where development may be affected by environmental constraints. It aims to ensure that development is compatible with identified environmental values. The specific objectives and requirements depend on the relevant overlay schedule (Victorian Government, 2026).
+
+These frameworks provide different forms of guidance and protection. The UGB directs the broader location of urban growth, the MSA and BCS address biodiversity conservation within planned growth areas, and the ESO applies environmental considerations through local planning schemes.
+
+In this study, BCS Conservation Areas and ESO spatial layers were used to examine the extent of mapped conservation and planning coverage across the study precincts. Areas without mapped BCS or ESO coverage were treated as potential gaps requiring further investigation, rather than areas assumed to have no environmental protection.
 
 # Data
 
 ## Urban development data
 
-<!-- Zora -->
+Urban development was examined using the Victorian Land Cover Time Series published by the Victorian Department of Energy, Environment and Climate Action (DEECA, n.d.). The dataset provides spatial information on land-cover patterns across Victoria, covering seven periods from 1985–90 to 2015–19. Each raster has a spatial resolution of 25 metres.
+
+To measure urban land, we combined two land-cover classes: Built environment and Urban area. These classes were used as an indicator of developed land across the study area. Each raster cell represents 625 square metres, equivalent to 0.0625 hectares.
+
+The land-cover data were analysed at two spatial scales. At the LGA level, they provided an overview of historical urban expansion across Casey, Hume, Melton, Whittlesea and Wyndham. At the PSP/MSA precinct level, they were used to calculate urban land area and compare development pressure across the 101 analytical precincts.
+
+The main comparison used the earliest and latest periods, 1985–90 and 2015–19. These data capture changes in classified urban land cover but do not distinguish housing development from other urban land uses. Therefore, urban land-cover change was used as a proxy for broader development pressure rather than a direct measure of residential expansion.
 
 ## Habitat Value data
 
@@ -83,17 +126,27 @@ Using both BCS and ESO allowed the project to compare ecological and connectivit
 
 ## Spatial boundaries and analytical units
 
-Spatial boundaries were used to define both the broader study area and the precinct-level analytical units. Local Government Area (LGA) boundaries were used to identify the five study LGAs: Casey, Hume, Melton, Whittlesea and Wyndham. PSP boundary polygons were then matched with the available MSA precinct attributes to create the precinct-level spatial dataset used throughout the analysis.
+The spatial analysis used LGA boundaries, PSP polygons and MSA precinct records to establish a consistent set of analytical units. The five selected LGA boundaries were combined to define the overall study area.
 
-All spatial layers were transformed to a common projected coordinate reference system before area-based calculations were carried out. Precincts were intersected with the combined five-LGA study area, and the proportion of each precinct falling within the study area was calculated.
+PSP boundary names were standardised before being matched with the MSA precinct records. Of the 122 MSA records, 117 were successfully matched to spatial polygons. The matched precincts were transformed to the GDA94 / Vicgrid94 projected coordinate reference system (EPSG:3111) for spatial processing and area calculations.
 
-To ensure that only precincts substantially located within the selected growth areas were retained, a precinct was included when at least 50% of its total area overlapped the five study LGAs. Applying this rule produced the final set of 101 analytical PSP/MSA precincts used consistently across the project.
+The precinct polygons were then intersected with the combined five-LGA study area. Of the 117 matched precincts, 105 had some spatial overlap with the study area. For each precinct, the proportion of its original area within the study boundary was calculated.
+
+Only precincts with at least 50% of their original area inside the five LGAs were retained. This excluded four precincts with marginal boundary overlaps, producing the final set of 101 analytical precincts.
+
+The resulting precinct boundaries provided a common spatial framework for integrating urban land cover, Habitat Value, focal-species records, BCS Conservation Areas and ESO coverage. Both the baseline ecological screening and structural-connectivity assessment were conducted using these same analytical units.
 
 # Methodology
 
 ## Development-pressure analysis
 
-<!-- Zora -->
+Urban development pressure was assessed at the precinct level using the Victorian Land Cover Time Series. We compared land-cover conditions between 1985–90 and 2015–19 to examine long-term urban expansion across the 101 analytical precincts.
+
+Two complementary indicators were calculated. Urban growth (ha) measured the absolute change in urban land area between the two periods, while urban-share change (percentage points) measured the change in the proportion of each precinct classified as urban. Using both indicators allowed us to capture different patterns of development: larger precincts may experience substantial expansion in absolute terms, while smaller precincts may undergo a large proportional change despite gaining fewer hectares of urban land.
+
+For each indicator, the median across the 101 precincts was used as a screening threshold. A precinct was classified as having high development pressure if either its urban growth or urban-share change exceeded the corresponding median. This OR condition was chosen to identify precincts showing substantial expansion on either measure, rather than requiring both conditions to be satisfied.
+
+The median thresholds were 6.50 ha for urban growth and 1.62 percentage points for urban-share change. These thresholds provide a transparent and reproducible relative classification within the study area. However, they are not official planning standards, and the use of an OR condition may include precincts that are relatively high on only one development indicator. The resulting classification was used as an input to the baseline ecological screening and the separate structural-connectivity assessment.
 
 ## Ecological-value assessment
 
@@ -110,7 +163,13 @@ Using an OR condition allowed species-occurrence evidence to contribute to ecolo
 
 ## Baseline ecological screening
 
-<!-- Zora -->
+A baseline ecological screening was conducted to identify precincts where development pressure, ecological value and potential conservation gaps overlap. The screening was applied to all 101 analytical precincts.
+
+Three binary conditions were combined: high development pressure, high ecological value and no mapped BCS Conservation Area coverage. Development pressure and ecological value were classified using the methods described above. No mapped BCS coverage was defined as zero spatial overlap with BCS Conservation Areas.
+
+A precinct was classified as a baseline ecological priority only when all three conditions were satisfied. This intersection-based approach provides a transparent and reproducible way to identify precincts where multiple concerns coincide.
+
+However, the screening does not measure the severity of ecological impacts or establish that an entire precinct requires protection. Similarly, zero mapped BCS coverage does not imply the absence of all environmental or planning controls. The resulting priorities should therefore be interpreted as locations for further assessment rather than final conservation designations.
 
 ## Structural habitat-connectivity screening
 
@@ -168,7 +227,15 @@ The resulting Priority Score is a relative screening measure across the 101 anal
 
 ## Urban development pressure
 
-<!-- Zora -->
+The land-cover analysis showed substantial historical urban expansion across Melbourne's five selected growth-area LGAs between 1985–90 and 2015–19. Urban land area increased across all five LGAs, although the extent of expansion varied. Casey recorded the largest absolute increase in urban land, while Melton experienced the largest proportional increase relative to its initial urban area. These findings indicate that urban expansion was widespread but differed in scale and intensity across the growth corridors.
+
+At the precinct level, the two development indicators captured different aspects of this change. Absolute urban growth measured the additional area of developed land, while urban-share change highlighted the relative extent of development within each precinct. Applying the median-based screening criteria identified 63 of the 101 precincts as having high development pressure. The corresponding thresholds were 6.50 ha for urban growth and 1.62 percentage points for urban-share change.
+
+As shown in @fig-urban-share, Granite Hills recorded the largest increase in urban land share among the ten highest-ranked precincts. The differences across these locations illustrate the uneven distribution of historical urban development. The use of two indicators also means that a precinct could be classified as having high development pressure because of a relatively large absolute increase, a relatively large proportional increase, or both.
+
+These results identify where historical urban land-cover change was relatively pronounced within the study area. However, they should not be interpreted as measures of residential construction alone or as evidence that development directly caused habitat fragmentation. Instead, the development-pressure indicators provide one component of the broader ecological screening framework.
+
+![Top ten precincts by change in urban land share between 1985–90 and 2015–19.](../figures/urban_share_change_top10.png){#fig-urban-share}
 
 ## Habitat and focal-species findings
 
@@ -191,7 +258,15 @@ These results should not be interpreted as showing that habitat outside BCS is c
 ![High-value habitat outside BCS Conservation Areas.](../figures/conservation_gap_bar.png){#fig-conservation-gap}
 ## Baseline ecological priorities
 
-<!-- Zora -->
+The baseline ecological screening identified 14 of the 101 analytical precincts as ecological priorities. Each selected precinct met all three criteria: high historical development pressure, high ecological value and no mapped BCS Conservation Area coverage. These precincts therefore represent locations where multiple indicators of development and conservation concern coincide.
+
+As shown in @fig-baseline-priority, the identified priorities include Aurora, Greenvale Central, Rockbank, Tarneit North and Werribee Junction, among other locations. Their selection demonstrates that the overlap between development pressure and ecological value is not confined to a single growth corridor. Instead, potential ecological priorities occur across different parts of the study area.
+
+The screening results are particularly relevant because the selected precincts combine ecological evidence with historical development pressure while falling outside mapped BCS Conservation Areas. Their identification does not mean that every part of each precinct contains important habitat, nor does it establish that the existing planning framework provides no protection. Rather, it suggests that these precincts warrant closer examination of the location, condition and planning status of their remaining habitat.
+
+These 14 baseline priorities provide an initial set of locations for ecological and planning review. They are distinct from the connectivity priorities reported in the following section, which were identified using a separate assessment of habitat fragmentation, structural connectivity and development pressure. The two groups should therefore be considered complementary screening results rather than sequential selections.
+
+![Spatial distribution of the 14 baseline ecological priority precincts.](../figures/final_priority_map_ppt.png){#fig-baseline-priority}
 
 ## Habitat connectivity and planning protection
 
@@ -306,5 +381,9 @@ These contributions extended the project beyond a simple comparison of urban gro
 <!-- Complete according to Moodle requirements -->
 
 # References
+
+Department of Energy, Environment and Climate Action. (n.d.). *Victorian Land Cover Time Series* [Data set]. DataVic. https://discover.data.vic.gov.au/en_AU/dataset/victorian-land-cover-time-series
+
+Haddad, N. M., et al. (2015). Habitat fragmentation and its lasting impact on Earth's ecosystems. Science Advances, 1(2), e1500052. https://doi.org/10.1126/sciadv.1500052
 
 # Appendix
