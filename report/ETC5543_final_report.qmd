@@ -19,18 +19,6 @@ An Interactive Priority Explorer was also developed to support comparison of pre
 
 # Introduction
 
-Melbourne’s fringe growth areas are experiencing substantial urban expansion as new residential and employment areas are developed to accommodate population growth. While this development supports housing and infrastructure needs, it can also place pressure on native habitat through land conversion, habitat fragmentation and increasing separation between ecologically important areas.
-
-This project examines these pressures across five Local Government Areas (LGAs) on Melbourne’s fringe: Casey, Hume, Melton, Whittlesea and Wyndham. The analysis is conducted at the Precinct Structure Plan (PSP) and Melbourne Strategic Assessment (MSA) precinct level, resulting in 101 analytical precincts across the study area. Using precincts as the unit of analysis allows development and ecological conditions to be compared at a scale that is relevant to growth-area planning.
-
-Rather than examining urban expansion and biodiversity separately, the project integrates multiple sources of evidence, including land-cover change, Habitat Value, recent records of the Golden Sun Moth and Growling Grass Frog, Biodiversity Conservation Strategy (BCS) Conservation Areas, Environmental Significance Overlays (ESO), and structural habitat-connectivity indicators. This provides a broader view of where development pressure, ecological value and gaps in mapped conservation or planning coverage may overlap.
-
-The study is guided by the following research question:
-
-**Where do urban development pressure, biodiversity value and conservation gaps overlap, and which precincts warrant further habitat connectivity and planning protection assessment?**
-
-The purpose of the analysis is not to identify confirmed wildlife corridors or directly model animal movement. Instead, it provides an exploratory precinct-level screening framework to identify areas that may warrant closer ecological assessment and further planning consideration.
-
 ## Background and motivation
 
 Melbourne's continued urban growth has increased pressure on land at the metropolitan fringe, where new development can overlap with areas of ecological importance. Urban sprawl, characterised by the outward expansion of developed land, can alter natural habitats and contribute to their fragmentation. As habitats become smaller and more isolated, the spatial connections between them may also be affected.
@@ -42,8 +30,6 @@ In Melbourne's growth corridors, urban development and biodiversity conservation
 This project examines these issues across Melbourne's growth corridors by combining historical urban land-cover change, habitat value, focal-species records and planning protection data. Rather than attempting to confirm actual wildlife movement corridors, the study aims to identify precincts where ecological and planning concerns overlap and where further investigation of habitat connectivity may be useful.
 
 ## Research question and objectives
-
-This study investigates the relationship between urban development pressure, ecological value and conservation planning in Melbourne's growth corridors. It focuses on identifying locations where historical urban expansion overlaps with areas of biodiversity importance and where existing planning protections may require further consideration.
 
 The main research question is:
 
