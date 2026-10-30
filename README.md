@@ -49,7 +49,7 @@ The main analytical scripts are stored in the `R/` folder.
 | `01_data_check.R` | Initial inspection and checking of project data |
 | `02_species_data.R` | Preparation of focal-species occurrence records |
 | `02_biodiversity_processing.qmd` | Biodiversity data exploration and processing |
-| `03_development_processing.R` | Processing of historical urban development indicators |
+| `03_development_processing. qmd` | Processing of historical urban development indicators |
 | `04_master_dataset.R` | Integration of development and biodiversity indicators at precinct level |
 | `05_priority_analysis.R` | Baseline ecological screening |
 | `06_biodiversity_results.R` | Habitat, species and conservation-gap summaries and figures |
@@ -107,7 +107,7 @@ Some original spatial datasets are too large to store directly in the Git reposi
 
 1. Clone or download this repository.
 2. Open `ETC5543-Project10.Rproj` in RStudio.
-3. Install the required R packages.
+3. Install the required R packages listed above.
 4. Ensure the required source datasets are available in the corresponding `data/` directories.
 5. Run the analytical scripts in the workflow described above.
 6. Generated outputs are saved to the relevant `data/processed/` and `figures/` directories.

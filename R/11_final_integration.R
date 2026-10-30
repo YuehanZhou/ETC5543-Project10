@@ -142,7 +142,7 @@ final_summary <- final_integrated_results |>
       sum(connectivity_and_species, na.rm = TRUE),
     
     connectivity_without_bcs_eso =
-      sum(protection_gap, na.rm = TRUE),
+      sum(connectivity_priority & protection_gap, na.rm = TRUE),
     
     connectivity_species_without_bcs_eso =
       sum(

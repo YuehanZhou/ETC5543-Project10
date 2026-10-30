@@ -66,12 +66,6 @@ link-citations: true
 
 \pagenumbering{roman}
 
-\begin{center}
-{\LARGE \textbf{Table of Contents}}
-\end{center}
-
-\vspace{0.5cm}
-
 \tableofcontents
 
 \newpage
@@ -462,6 +456,34 @@ The connectivity priorities were then compared with mapped Biodiversity Conserva
 
 Focal-species evidence provided an additional layer of ecological context. Two connectivity-priority precincts, Aurora and Sunbury South, contained recent records of at least one focal species. Aurora was the only precinct that combined all three forms of concern: connectivity priority status, focal-species evidence and no mapped BCS or ESO coverage.
 
+@tbl-connectivity-priorities summarises the focal-species evidence and mapped BCS and ESO coverage for the 10 connectivity-priority precincts.
+
+```{r}
+#| label: tbl-connectivity-priorities
+#| tbl-cap: "Connectivity-priority precincts and associated ecological and planning evidence."
+#| echo: false
+#| message: false
+#| warning: false
+
+library(readr)
+library(dplyr)
+library(knitr)
+
+priority_table <- read_csv(
+  "../data/processed/final_priority_table.csv",
+  show_col_types = FALSE
+)
+
+priority_table |>
+  select(
+    Precinct = psp_name,
+    `Focal species` = focal_species_evidence,
+    `BCS coverage` = bcs_coverage,
+    `ESO coverage` = eso_coverage
+  ) |>
+  knitr::kable()
+```
+
 As shown in @fig-connectivity-priority, these results identify a smaller set of precincts that may warrant closer ecological and planning assessment. However, the connectivity priorities represent structural screening results rather than confirmed fauna movement corridors, and the absence of mapped BCS or ESO coverage does not imply that no other environmental protections apply.
 
 ![Potential habitat connectivity priorities across the study area.](../figures/connectivity_priority_map.png){#fig-connectivity-priority}
@@ -509,7 +531,7 @@ Second, the large proportion of high-value habitat located outside BCS Conservat
 
 The connectivity analysis also adds an important spatial perspective. Protecting individual habitat patches does not necessarily address the ecological consequences of fragmentation or separation between habitat areas. Precincts identified as potential connectivity priorities may therefore warrant closer consideration of how future development could affect the continuity, isolation or function of remaining habitat. This could include more detailed corridor assessment, investigation of road and infrastructure barriers, or consideration of whether habitat connections can be retained or strengthened through future planning.
 
-The combined evidence is particularly useful for prioritising where more detailed assessment may be most valuable. Connectivity-priority precincts with no mapped BCS or ESO coverage represent potential planning gaps within the layers examined in this study, while precincts that also contain focal-species evidence provide an additional reason for closer ecological investigation. These results do not prescribe a specific planning outcome, but they can help direct limited assessment resources towards locations where multiple indicators of concern overlap.
+The combined evidence is particularly useful for prioritising where more detailed assessment may be most valuable. Connectivity-priority precincts with no mapped BCS or ESO coverage represent potential planning gaps within the layers examined in this study, while precincts that also contain focal-species evidence provide an additional reason for closer ecological investigation. These results do not prescribe a specific planning outcome, but they can help direct limited assessment resources towards locations where multiple indicators of concern overlap. Aurora may be a useful candidate for more detailed ecological and planning review because it combines structural connectivity concerns, recent focal-species evidence and no mapped BCS or ESO coverage.
 
 The Interactive Priority Explorer further supports this decision-making process by allowing different planning objectives to be compared. A planner may, for example, place greater emphasis on development pressure in one scenario and greater emphasis on habitat importance and conservation gaps in another. This flexibility is useful because planning decisions often involve balancing competing priorities rather than applying a single fixed ecological ranking.
 
@@ -583,13 +605,25 @@ My main contribution to the project focused on the biodiversity, habitat-connect
 
 I developed the biodiversity conservation-gap analysis by integrating high-value habitat with Biodiversity Conservation Strategy (BCS) Conservation Areas to identify habitat occurring inside and outside mapped BCS coverage. I then extended the analysis by incorporating Environmental Significance Overlays (ESO) to provide an additional planning perspective.
 
-A major part of my contribution was the structural habitat-connectivity analysis. I developed the fragmentation and connectivity workflow using habitat patches, patch density, largest-patch share, major habitat area and nearest-patch distance. I also carried out sensitivity testing using alternative patch-size thresholds so that the connectivity results were not based on a single spatial assumption. I subsequently integrated the connectivity results with focal-species evidence and BCS/ESO coverage to identify areas with overlapping ecological and planning concerns.
+A major part of my contribution was the subsequent refinement and presentation of the structural habitat-connectivity analysis. Building on the initial fragmentation and connectivity workflow, I worked with habitat patches, patch density, largest-patch share, major habitat area and nearest-patch distance.  I also contributed to sensitivity testing using alternative patch-size thresholds so that the connectivity results were not based on a single spatial assumption. I subsequently integrated the connectivity results with focal-species evidence and BCS/ESO coverage to identify areas with overlapping ecological and planning concerns.
 
 I also developed the Interactive Priority Explorer in Shiny. The application combines development pressure, habitat importance and conservation-gap indicators into a flexible weighted ranking and allows users to explore focal-species, connectivity and planning-coverage evidence interactively.
 
 These contributions extended the project beyond a simple comparison of urban growth and biodiversity by adding habitat fragmentation, connectivity and planning-coverage perspectives. The Interactive Priority Explorer also helped translate the analytical outputs into a more practical format for comparing precincts and supporting further assessment.
 
 ## Yuehan Zhou
+
+My main contribution to the project focused on spatial data processing, urban development analysis, ecological priority screening, habitat connectivity and planning-overlay assessment.
+
+I worked on biodiversity data processing, including exploring candidate threatened-fauna species, preparing species records, and analysing Habitat Value and BCS conservation data. I also developed the urban development analysis using the Victorian Land Cover Time Series to examine historical urban expansion across the five study LGAs and PSP/MSA precincts, including changes in urban land area and urban land share.
+
+I developed the baseline ecological screening by combining development pressure, ecological value and BCS coverage to identify priority precincts. This provided a framework for identifying areas where urban expansion and ecological concerns overlap.
+
+For the habitat fragmentation and structural-connectivity assessment, I developed the initial analytical workflow, including habitat-patch identification, fragmentation and connectivity indicators, and sensitivity analysis using different patch-size thresholds. This work provided a foundation for subsequent refinement and integration of the connectivity results.
+
+I also developed the ESO spatial-overlay analysis to examine planning coverage and identify potential protection gaps. Siddhi and I jointly developed the master precinct dataset and integrated species, connectivity and planning-coverage evidence into the final analytical outputs.
+
+In addition, I contributed to the project visualisations, group presentation, report writing and interpretation of the findings. These contributions helped establish a consistent precinct-level analytical framework and identify locations requiring further ecological and planning assessment.
 
 # Reproducibility and Repository
 
@@ -599,7 +633,7 @@ The complete project materials are available in the project GitHub repository:
 
 The repository contains the R scripts, processed outputs, figures, presentation materials and Quarto report files used in the project. The analysis was conducted in R [@r_core_team_2026], with `tidyverse` used for data manipulation and visualisation [@wickham2019tidyverse], `sf` for vector spatial processing [@pebesma2018sf], `terra` for raster analysis [@hijmans2026terra], and `shiny` and `leaflet` for the interactive Priority Explorer [@chang2026shiny; @cheng2025leaflet].
 
-The analytical workflow is organised into numbered scripts covering data preparation, development analysis, biodiversity assessment, ecological screening, habitat connectivity, planning overlays and final integration. Detailed instructions on the repository structure, script execution order, data availability and reproducibility are provided in the repository README.md.
+The analytical workflow is organised into numbered scripts covering data preparation, development analysis, biodiversity assessment, ecological screening, habitat connectivity, planning overlays and final integration. Detailed information on the repository structure, analytical workflow, data availability and reproducibility is provided in the repository README.md.
 
 Some large source datasets are not stored directly in the repository. Their original providers, access information and licensing conditions are documented in the Data section of this report and in the repository.
 
