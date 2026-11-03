@@ -665,7 +665,7 @@ The complete project materials are available in the project GitHub repository:
 
 [GitHub Repository](https://github.com/YuehanZhou/ETC5543-Project10)
 
-The repository contains the R scripts, processed outputs, figures, presentation materials and Quarto report files used in the project. The analysis was conducted in R [@r_core_team_2026], with `tidyverse` used for data manipulation and visualisation [@wickham2019tidyverse], `sf` for vector spatial processing [@pebesma2018sf], `terra` for raster analysis [@hijmans2026terra], and `shiny` and `leaflet` for the interactive Priority Explorer [@chang2026shiny; @cheng2025leaflet].
+The repository contains the R scripts, processed outputs, figures, presentation materials and Quarto report files used in the project. The analysis was conducted in R [@r_core_team_2026], with tidyverse used for data manipulation and visualisation [@wickham2019tidyverse], sf for vector spatial processing [@pebesma2018sf], terra for raster analysis [@hijmans2025terra], and shiny and leaflet for the interactive Priority Explorer [@chang2026shiny; @cheng2024leaflet].
 
 The analytical workflow is organised into numbered scripts covering data preparation, development analysis, biodiversity assessment, ecological screening, habitat connectivity, planning overlays and final integration. Detailed information on the repository structure, analytical workflow, data availability and reproducibility is provided in the repository README.md.
 

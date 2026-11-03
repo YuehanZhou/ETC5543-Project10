@@ -47,7 +47,7 @@ The main analytical scripts are stored in the `R/` folder.
 | File | Purpose |
 |---|---|
 | `01_data_check.R` | Initial inspection and checking of project data |
-| `02_species_data.R` | Preparation of focal-species occurrence records |
+| `02_species_data.R` | Initial screening and comparison of candidate focal species |
 | `02_biodiversity_processing.qmd` | Biodiversity data exploration and processing |
 | `03_development_processing. qmd` | Processing of historical urban development indicators |
 | `04_master_dataset.R` | Integration of development and biodiversity indicators at precinct level |
